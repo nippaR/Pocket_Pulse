@@ -1,22 +1,19 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import IncomeManagement from './pages/IncomeManagement';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {/* Landing page (/) -> Dashboard */}
+        <Route path="/" element={<Dashboard />} />
+
+        {/* /income -> IncomeManagement page */}
+        <Route path="/income" element={<IncomeManagement />} />
+      </Routes>
+    </Router>
   );
 }
 
