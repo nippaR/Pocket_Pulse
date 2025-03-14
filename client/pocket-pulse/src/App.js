@@ -2,6 +2,7 @@ import React from 'react';
 import {BrowserRouter,Routes, Route} from 'react-router-dom';
 import Header from './pages/Header';
 import Home from './pages/Home';
+import Metamask from './pages/Metamasklog';
 
 function App() {
   return(
@@ -9,6 +10,7 @@ function App() {
         <Header/>
         <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Metamask/>} />
         </Routes>
     </BrowserRouter>
   );
