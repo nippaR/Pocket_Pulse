@@ -1,18 +1,18 @@
+// src/components/IncomeForm.js
 import React, { useState } from 'react';
 import {
   Box,
   Button,
   Grid,
-  MenuItem,
-  Select,
   TextField,
   Typography,
+  Select,
+  MenuItem,
   InputLabel,
   FormControl
 } from '@mui/material';
 
-const IncomeForm = ({ onAddIncome, onBack }) => {
-  // Local form state
+const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
   const [formData, setFormData] = useState({
     amount: '',
     category: '',
@@ -20,16 +20,13 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
     dateReceived: '',
     description: '',
     associatedRental: '',
-    file: null, // store file object here
+    file: null,
   });
 
-  // Handle input changes for text/select fields
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle file input separately
@@ -40,25 +37,22 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
     }));
   };
 
-  // Common function to handle either "Save" or "Save & Add Another"
+  // Common function for form submission
   const handleSubmit = (e, addAnother = false) => {
     e.preventDefault();
-
-    // Pass data up to parent
+    console.log('Save button clicked, formData:', formData);
+    // Call parent's function to add income record
     onAddIncome(formData, addAnother);
-
-    // Reset the form if user clicked "Save & Add Another"
-    if (addAnother) {
-      setFormData({
-        amount: '',
-        category: '',
-        payer: '',
-        dateReceived: '',
-        description: '',
-        associatedRental: '',
-        file: null,
-      });
-    }
+    // Clear form fields after saving
+    setFormData({
+      amount: '',
+      category: '',
+      payer: '',
+      dateReceived: '',
+      description: '',
+      associatedRental: '',
+      file: null,
+    });
   };
 
   return (
@@ -75,12 +69,12 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
       </Typography>
 
       <Grid container spacing={2}>
-        {/* Amount */}
+        {/* Amount Field */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
             required
-            label="Amount"
+            label="Amount (USD)"
             name="amount"
             type="number"
             value={formData.amount}
@@ -88,7 +82,7 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
           />
         </Grid>
 
-        {/* Category */}
+        {/* Category Field */}
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth required>
             <InputLabel id="category-label">Category</InputLabel>
@@ -107,7 +101,7 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
           </FormControl>
         </Grid>
 
-        {/* Payer */}
+        {/* Payer Field */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -119,7 +113,7 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
           />
         </Grid>
 
-        {/* Date Received */}
+        {/* Date Received Field - with max date restriction */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -127,15 +121,14 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
             label="Date Received"
             name="dateReceived"
             type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            InputLabelProps={{ shrink: true }}
+            inputProps={{ max: maxDate }}  // Prevent future dates
             value={formData.dateReceived}
             onChange={handleChange}
           />
         </Grid>
 
-        {/* Description */}
+        {/* Description Field */}
         <Grid item xs={12}>
           <TextField
             fullWidth
@@ -148,7 +141,7 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
           />
         </Grid>
 
-        {/* Associated Rental */}
+        {/* Associated Rental Field */}
         <Grid item xs={12}>
           <FormControl fullWidth required>
             <InputLabel id="rental-label">Associated Rental</InputLabel>
@@ -167,15 +160,15 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
           </FormControl>
         </Grid>
 
-        {/* File Upload (Receipt or Invoice) */}
+        {/* File Upload Field */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-            Attach a receipt or an invoice
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            Attach a receipt or invoice
           </Typography>
           <Box
             sx={{
               border: '2px dashed #ccc',
-              padding: 2,
+              p: 2,
               textAlign: 'center',
               borderRadius: 1,
               cursor: 'pointer',
@@ -188,7 +181,7 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
             />
           </Box>
           {formData.file && (
-            <Typography variant="body2" sx={{ marginTop: 1 }}>
+            <Typography variant="body2" sx={{ mt: 1 }}>
               Selected file: {formData.file.name}
             </Typography>
           )}
@@ -196,46 +189,17 @@ const IncomeForm = ({ onAddIncome, onBack }) => {
       </Grid>
 
       {/* Buttons */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: 2,
-          marginTop: 2,
-        }}
-      >
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={onBack}
-        >
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button variant="outlined" color="primary" onClick={onBack}>
           Back
         </Button>
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={(e) => handleSubmit(e, true)}
-        >
+        <Button variant="contained" color="primary" onClick={(e) => handleSubmit(e, true)}>
           Save & Add Another
         </Button>
-
-        <Button
-          variant="contained"
-          color="secondary"
-          type="submit" 
-        >
+        <Button variant="contained" color="secondary" type="submit">
           Save
         </Button>
       </Box>
-
-      <Typography
-        variant="body2"
-        color="error"
-        sx={{ marginTop: 2 }}
-      >
-        * Required
-      </Typography>
     </Box>
   );
 };
