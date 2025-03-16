@@ -1,32 +1,55 @@
-import React, { useState } from 'react';
+// src/pages/IncomeManagement.js
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import IncomeForm from '../components/IncomeForm';
-import IncomeTable from '../components/IncomeTable';
-import { Container, Typography } from '@mui/material';
 
 const IncomeManagement = () => {
-  // This array holds all submitted income records
+  const navigate = useNavigate();
+
+  // Local state to hold income records (if needed for other logic)
   const [incomeList, setIncomeList] = useState([]);
+  // State for error messages (if validations fail)
+  const [errorMessage, setErrorMessage] = useState('');
+  // State to control display of the success banner
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  // This function runs when the form is submitted in IncomeForm
+  // Load existing records from Local Storage (if any) on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('incomesRecords');
+    if (stored) {
+      setIncomeList(JSON.parse(stored));
+    }
+  }, []);
+
+  // Create today's date string in format "YYYY-MM-DD"
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  // Called when the user submits the form
   const handleAddIncome = (formData, addAnother) => {
-    // Add the new record to the existing list
-    setIncomeList((prevList) => [...prevList, formData]);
+    // Clear any previous error (if using validations here)
+    setErrorMessage('');
 
-    // If you want to do something differently for “Save & Add Another,”
-    // you could handle that here with the 'addAnother' flag.
-    // e.g., show a toast notification, etc.
+    // If validations pass, append the new record
+    const updatedList = [...incomeList, formData];
+    setIncomeList(updatedList);
+
+    // Save the updated list to Local Storage
+    localStorage.setItem('incomesRecords', JSON.stringify(updatedList));
+
+    // Show success banner
+    setShowSuccess(true);
+    // Hide the banner after 3 seconds
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3000);
+
+    // Additional logic for "Save & Add Another" could go here if needed
   };
 
-  // Called when user clicks the trash icon in IncomeTable
-  const handleDeleteIncome = (index) => {
-    setIncomeList((prevList) => prevList.filter((_, i) => i !== index));
-  };
-
-  // For the "Back" button in IncomeForm
+  // The Back button navigates to the records page
   const handleBack = () => {
-    // In a real app, you might use React Router’s useNavigate() or similar
-    // For now, we’ll just log:
-    console.log('Back button clicked - navigate away or handle as needed');
+    navigate('/records');
   };
 
   return (
@@ -35,16 +58,25 @@ const IncomeManagement = () => {
         Income Management
       </Typography>
 
-      {/* The form for adding new income */}
+      {/* Display error message if any */}
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMessage}
+        </Alert>
+      )}
+
+      {/* Display success banner when record is saved */}
+      {showSuccess && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          Record saved successfully!
+        </Alert>
+      )}
+
+      {/* Render the income form, passing today's date as maxDate */}
       <IncomeForm
         onAddIncome={handleAddIncome}
         onBack={handleBack}
-      />
-
-      {/* The table to display all incomes */}
-      <IncomeTable
-        incomeList={incomeList}
-        onDeleteIncome={handleDeleteIncome}
+        maxDate={todayStr}
       />
     </Container>
   );
