@@ -23,7 +23,7 @@ import {
   Divider,
   Badge,
 } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 // MUI Icons
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -70,7 +70,7 @@ const Sidebar = () => {
       <Box sx={{ flex: 1, overflowY: 'auto', p: 1 }}>
         <List disablePadding>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton component={Link} to="/">
               <ListItemText primary="Home" />
             </ListItemButton>
           </ListItem>
