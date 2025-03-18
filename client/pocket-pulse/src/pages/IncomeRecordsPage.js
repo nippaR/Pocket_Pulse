@@ -21,7 +21,7 @@ import {
   ListItemButton,
   ListItemText,
   Divider,
-  Badge,
+  Badge
 } from '@mui/material';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
@@ -174,7 +174,6 @@ function IncomeRecordsPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Load or reload data from local storage
   useEffect(() => {
     const stored = localStorage.getItem('incomesRecords');
     if (stored) {
@@ -196,22 +195,24 @@ function IncomeRecordsPage() {
     console.log('Refresh clicked!');
   };
 
+  // Navigate to add income page
   const handleAddIncome = () => {
     navigate('/income');
   };
 
-  // New "What If" button
+  // Navigate to scenario planner
   const handleWhatIf = () => {
     navigate('/what-if');
   };
 
+  // Filter icon placeholder
   const handleFilter = () => {
     console.log('Filter icon clicked!');
   };
 
+  // PDF report generation
   const handleReport = () => {
     console.log('Report icon clicked! Generating PDF...');
-
     const doc = new jsPDF('p', 'pt', 'a4');
     doc.setFontSize(20);
     doc.text('Pocket pulse.', 50, 40);
@@ -245,6 +246,7 @@ function IncomeRecordsPage() {
     doc.output('dataurlnewwindow');
   };
 
+  // Select/unselect all rows
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       const allIndices = incomeList.map((_, index) => index);
@@ -254,6 +256,7 @@ function IncomeRecordsPage() {
     }
   };
 
+  // Toggle a single row
   const handleRowCheckboxChange = (index) => {
     if (selectedRows.includes(index)) {
       setSelectedRows(selectedRows.filter((i) => i !== index));
@@ -262,10 +265,12 @@ function IncomeRecordsPage() {
     }
   };
 
+  // Edit a record
   const handleEdit = (index) => {
     navigate(`/edit-income/${index}`);
   };
 
+  // Delete a record
   const handleDelete = (delIndex) => {
     const updatedList = incomeList.filter((_, i) => i !== delIndex);
     setIncomeList(updatedList);
@@ -277,11 +282,16 @@ function IncomeRecordsPage() {
     console.log(`Deleted record #${delIndex}`);
   };
 
+  // Directly navigate to Sign In page on profile click
+  const handleProfileClick = () => {
+    navigate('/signin');
+  };
+
   return (
     <Box display="flex" width="100%">
       <Sidebar />
       <Container sx={{ flexGrow: 1, py: 3 }}>
-        {/* Tier 1: New top banner */}
+        {/* Tier 1 Banner */}
         <Box
           display="flex"
           justifyContent="space-between"
@@ -313,11 +323,14 @@ function IncomeRecordsPage() {
             <IconButton sx={{ color: '#fff' }}>
               <NotificationsNoneIcon />
             </IconButton>
-            <Avatar src="/images/profile.jpg" alt="Profile" />
+            {/* Profile avatar: direct nav to /signin */}
+            <IconButton onClick={handleProfileClick}>
+              <Avatar src="/images/profile.jpg" alt="Profile" />
+            </IconButton>
           </Box>
         </Box>
 
-        {/* Tier 2: Top bar with additional icons */}
+        {/* Tier 2 Top Bar */}
         <Box
           display="flex"
           justifyContent="space-between"
@@ -359,7 +372,7 @@ function IncomeRecordsPage() {
           </Paper>
         )}
 
-        {/* Table */}
+        {/* Table of incomes */}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
