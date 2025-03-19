@@ -8,6 +8,7 @@ import EditIncomePage from './pages/EditIncomePage';
 import WhatIfScenarioPlanner from './pages/WhatIfScenarioPlanner';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import Community from './pages/Community';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
 function MainContent() {
   const location = useLocation();
 
-  const noHeaderFooterPaths = ['/login', '/records','/signin','/signup','/what-if','/income'];
+  const noHeaderFooterPaths = ['/login', '/records','/signin','/signup','/what-if','/income','/community'];
   const isNoHeaderFooterPage = noHeaderFooterPaths.includes(location.pathname);
 
   return (
@@ -37,6 +38,7 @@ function MainContent() {
         <Route path="/edit-income/:rowIndex" element={<EditIncomePage />} />
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/community" element={<Community/>}/>
       </Routes>
     </>
   );
