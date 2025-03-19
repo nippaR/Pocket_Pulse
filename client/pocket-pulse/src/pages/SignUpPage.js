@@ -7,11 +7,13 @@ import {
   Divider,
   IconButton,
   InputAdornment,
-  Link,
   TextField,
-  Typography
+  Typography,
+  Link
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
 
 const SignUpPage = () => {
@@ -27,8 +29,8 @@ const SignUpPage = () => {
   const handleSignUp = () => {
     // Perform your sign-up logic here
     console.log('Signing up with:', email, password, confirm);
-    // If success, navigate somewhere
-    navigate('/records');
+    // If success, navigate to Home page
+    navigate('/');
   };
 
   return (
@@ -125,18 +127,20 @@ const SignUpPage = () => {
         variant="outlined"
         fullWidth
         sx={{ mb: 2, textTransform: 'none' }}
+        startIcon={<FacebookIcon />}
         onClick={() => console.log('Sign up with Facebook')}
       >
-        Login with Facebook
+        Sign Up with Facebook
       </Button>
 
       <Button
         variant="outlined"
         fullWidth
         sx={{ textTransform: 'none' }}
+        startIcon={<GoogleIcon />}
         onClick={() => console.log('Sign up with Google')}
       >
-        Login with Google
+        Sign Up with Google
       </Button>
     </Container>
   );
