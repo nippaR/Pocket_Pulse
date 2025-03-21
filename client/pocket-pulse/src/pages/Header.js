@@ -55,7 +55,7 @@ const handleRefresh = () => {
             </Button>
 
             <Button  onClick={handleRefresh} sx={{ml:5, mt:2}}>
-                <RouterLink to="/" style={{ textDecoration: 'none' }}>Investment and Savings</RouterLink>
+                <RouterLink to="/investment-projects" style={{ textDecoration: 'none' }}>Investment and Savings</RouterLink>
             </Button>
 
             <Button  onClick={handleRefresh} sx={{ml:5, mt:2}}>
