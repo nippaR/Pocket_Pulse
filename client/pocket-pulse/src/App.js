@@ -9,6 +9,8 @@ import WhatIfScenarioPlanner from './pages/WhatIfScenarioPlanner';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import Community from './pages/Community';
+import DonationRequestForm from './pages/DonationRequestForm';
+import InvestmentProjects from './pages/Invenstment';
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function MainContent() {
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/community" element={<Community/>}/>
+        <Route path="/donation-request" element={<DonationRequestForm />} />
+        <Route path="/investment-projects" element={<InvestmentProjects />} />
       </Routes>
     </>
   );

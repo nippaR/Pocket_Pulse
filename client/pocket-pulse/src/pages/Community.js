@@ -18,7 +18,7 @@ import {
   TextField,
   Button
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // MUI Icons
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
@@ -27,7 +27,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 ////////////////////////////////////////////////////////////////////////////////
-// SIDEBAR
+// SIDEBAR COMPONENT
 ////////////////////////////////////////////////////////////////////////////////
 const Sidebar = () => {
   return (
@@ -64,7 +64,6 @@ const Sidebar = () => {
               <ListItemText primary="Home" />
             </ListItemButton>
           </ListItem>
-
           <ListItem disablePadding>
             <ListItemButton
               sx={{
@@ -81,28 +80,23 @@ const Sidebar = () => {
               />
             </ListItemButton>
           </ListItem>
-
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemText primary="Investment planning" />
             </ListItemButton>
           </ListItem>
-
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemText primary="Transactions" />
             </ListItemButton>
           </ListItem>
-
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemText primary="Incomes" />
             </ListItemButton>
           </ListItem>
         </List>
-
         <Divider sx={{ my: 2 }} />
-
         {/* Properties Section */}
         <Box
           sx={{
@@ -131,7 +125,6 @@ const Sidebar = () => {
           </ListItem>
         </List>
       </Box>
-
       {/* Bottom Section */}
       <Box
         sx={{
@@ -160,6 +153,7 @@ const Sidebar = () => {
 // MAIN COMMUNITY COMPONENT
 ////////////////////////////////////////////////////////////////////////////////
 function Community() {
+  const navigate = useNavigate();
   const currentUser = 'Emilia';
 
   // Minimal "Stories" state
@@ -182,13 +176,13 @@ function Community() {
   const [openViewStory, setOpenViewStory] = useState(false);
   const [selectedStory, setSelectedStory] = useState(null);
 
-  // Minimal posts feed
-  const [posts, setPosts] = useState([
-    { id: 101, author: 'Emilia', content: 'Hello community! Excited to be here.' },
-    { id: 102, author: 'Adam', content: 'Check out my new project!' },
-  ]);
+  // Minimal posts feed (empty initially)
+  const [posts, setPosts] = useState([]);
 
-  // CREATE POST MODAL
+  // CREATE POST / DONATION CHOICE modal
+  const [openChoiceModal, setOpenChoiceModal] = useState(false);
+
+  // For "Regular Post" modal
   const [openPostModal, setOpenPostModal] = useState(false);
   const [postContent, setPostContent] = useState('');
 
@@ -221,7 +215,7 @@ function Community() {
     handleCloseStoryModal();
   };
 
-  // VIEW STORY
+  // VIEW STORY handlers
   const handleViewStory = (story) => {
     setSelectedStory(story);
     setOpenViewStory(true);
@@ -235,21 +229,34 @@ function Community() {
     handleCloseViewStory();
   };
 
-  // CREATE POST (via modal)
-  const handleOpenPostModal = () => setOpenPostModal(true);
-  const handleClosePostModal = () => {
-    setOpenPostModal(false);
-    setPostContent('');
+  // OPEN CHOICE MODAL for creating a post
+  const handleOpenChoiceModal = () => setOpenChoiceModal(true);
+  const handleCloseChoiceModal = () => setOpenChoiceModal(false);
+
+  // If user chooses "Regular Post"
+  const handleChooseRegularPost = () => {
+    handleCloseChoiceModal();
+    setOpenPostModal(true);
   };
+
+  // If user chooses "Donation Request" -> navigate to donation form page
+  const handleChooseDonation = () => {
+    handleCloseChoiceModal();
+    navigate('/donation-request');
+  };
+
+  // SUBMIT REGULAR POST
   const handleSubmitPost = () => {
     if (!postContent.trim()) return;
     const newPost = {
       id: Date.now(),
       author: currentUser,
       content: postContent,
+      isDonationRequest: false,
     };
     setPosts([newPost, ...posts]);
-    handleClosePostModal();
+    setPostContent('');
+    setOpenPostModal(false);
   };
 
   return (
@@ -262,7 +269,13 @@ function Community() {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          sx={{ mb: 2, backgroundColor: '#1e407c', color: '#fff', p: 2, borderRadius: 1 }}
+          sx={{
+            mb: 2,
+            backgroundColor: '#1e407c',
+            color: '#fff',
+            p: 2,
+            borderRadius: 1,
+          }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             Community
@@ -354,18 +367,18 @@ function Community() {
           </Box>
         </Paper>
 
-        {/* CREATE POST BUTTON (LEFT-ALIGNED) */}
-        <Box sx={{ mb: 3 }}>
+        {/* CREATE POST BUTTON (left-aligned) */}
+        <Box sx={{ mb: 3, textAlign: 'left' }}>
           <Button
             variant="contained"
-            onClick={handleOpenPostModal}
+            onClick={handleOpenChoiceModal}
             sx={{ backgroundColor: '#283593' }}
           >
             Create Post
           </Button>
         </Box>
 
-        {/* POSTS FEED */}
+        {/* POSTS FEED (Initially empty) */}
         {posts.map((post) => (
           <Paper key={post.id} sx={{ p: 2, mb: 2 }}>
             <Box display="flex" alignItems="center" mb={1}>
@@ -374,9 +387,60 @@ function Community() {
               </Avatar>
               <Typography variant="subtitle2">{post.author}</Typography>
             </Box>
-            <Typography variant="body1">{post.content}</Typography>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              {post.content}
+            </Typography>
+            {post.isDonationRequest && (
+              <Paper sx={{ p: 1, backgroundColor: '#f4f8fb', border: '1px solid #ccc' }}>
+                <Typography variant="body2">
+                  <strong>Goal:</strong> {post.donationGoal}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Raised:</strong> {post.currentDonation || 0}
+                </Typography>
+              </Paper>
+            )}
           </Paper>
         ))}
+
+        {/* CHOICE MODAL (choose between Regular Post or Donation Request) */}
+        <Dialog open={openChoiceModal} onClose={handleCloseChoiceModal}>
+          <DialogTitle>Choose Post Type</DialogTitle>
+          <DialogContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+              <Button variant="contained" onClick={handleChooseRegularPost}>
+                Regular Post
+              </Button>
+              <Button variant="outlined" onClick={handleChooseDonation}>
+                Donation Request
+              </Button>
+            </Box>
+          </DialogContent>
+        </Dialog>
+
+        {/* REGULAR POST MODAL */}
+        <Dialog open={openPostModal} onClose={() => setOpenPostModal(false)} fullWidth maxWidth="sm">
+          <DialogTitle>Create a Post</DialogTitle>
+          <DialogContent>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              placeholder={`What's on your mind, ${currentUser}?`}
+              value={postContent}
+              onChange={(e) => setPostContent(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Box sx={{ textAlign: 'right' }}>
+              <Button onClick={() => setOpenPostModal(false)} sx={{ mr: 1 }}>
+                Cancel
+              </Button>
+              <Button variant="contained" onClick={handleSubmitPost}>
+                Post
+              </Button>
+            </Box>
+          </DialogContent>
+        </Dialog>
 
         {/* ADD STORY MODAL */}
         <Dialog open={openStoryModal} onClose={handleCloseStoryModal} fullWidth maxWidth="sm">
@@ -393,12 +457,7 @@ function Community() {
             />
             <Button variant="outlined" component="label" startIcon={<PhotoCameraIcon />}>
               Upload Image/Video
-              <input
-                hidden
-                accept="image/*,video/*"
-                type="file"
-                onChange={handleStoryFileChange}
-              />
+              <input hidden accept="image/*,video/*" type="file" onChange={handleStoryFileChange} />
             </Button>
             {storyFile && (
               <Typography sx={{ mt: 1 }} variant="body2">
@@ -441,29 +500,6 @@ function Community() {
             </DialogContent>
           </Dialog>
         )}
-
-        {/* CREATE POST MODAL */}
-        <Dialog open={openPostModal} onClose={handleClosePostModal} fullWidth maxWidth="sm">
-          <DialogTitle>Create Post</DialogTitle>
-          <DialogContent>
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              placeholder={`What's on your mind, ${currentUser}?`}
-              value={postContent}
-              onChange={(e) => setPostContent(e.target.value)}
-            />
-            <Box sx={{ mt: 2, textAlign: 'right' }}>
-              <Button onClick={handleClosePostModal} sx={{ mr: 1 }}>
-                Cancel
-              </Button>
-              <Button variant="contained" onClick={handleSubmitPost}>
-                Post
-              </Button>
-            </Box>
-          </DialogContent>
-        </Dialog>
       </Container>
     </Box>
   );
