@@ -1,11 +1,29 @@
 import React from 'react';
-import {Box} from '@mui/material';
-// import BTN from '../components/Button';
+import {Grid} from '@mui/material';
+import InvetSec from './HomePageComponents/InvetSec';
+import IncomeSec from './HomePageComponents/IncomeSec';
+import TransactionSec from './HomePageComponents/TransactionSec';
+
+
 export default function Home() {
+
+  
+
   return (
 
-    <Box sx={{backgroundColor: '#000000'}}>
-    
-    </Box>
+    <Grid sx={{backgroundColor: '#000000',
+              width: '100%',
+              height: '100vh',
+              display: 'flex',
+              flexDirection: 'column',
+    }}>
+
+      <InvetSec/>
+
+      <IncomeSec/>
+
+      <TransactionSec/>
+
+    </Grid>
   );
 }
