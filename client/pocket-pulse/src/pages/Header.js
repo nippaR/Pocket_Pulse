@@ -1,6 +1,7 @@
 import { Box, Button, Grid, Stack } from '@mui/material';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import IMG1 from '../Assets/fox.png'
 
 
@@ -8,14 +9,17 @@ const handleRefresh = () => {
   window.location.reload();
 };
   export default function Header() {
+    
+    const navigate = useNavigate();
+
     return (
-      <div style={{ position: 'sticky', top: 0, zIndex: 5000 }}>
+      <div style={{ position: 'sticky', top: 0, zIndex: 1000 }}>
       <Grid sx={{ 
                   backgroundColor: '#000000',
                   fontFamily:'poppins'
                   }}>
         <Stack direction={'row'} gap={22}>
-         <img src={IMG1} alt="logo" style={{width:'60px', height:'60px', marginLeft:'40px', marginTop:'10px'}}/>
+          <img src={IMG1} alt="logo" style={{width:'60px', height:'60px', marginLeft:'40px', marginTop:'10px'}}/>
                 
         <Box>
             <Stack direction="row" justifyContent={'center'} spacing={15} sx={{ml:13}} >
@@ -53,7 +57,13 @@ const handleRefresh = () => {
                       height:29,
                       mt:2.5,
                       ml:15
-                      }}>
+                      }}
+                      onClick={() =>{
+                        navigate('/signup');
+                        handleRefresh();
+                      }}
+
+                      >
                         login
           </Button>
 

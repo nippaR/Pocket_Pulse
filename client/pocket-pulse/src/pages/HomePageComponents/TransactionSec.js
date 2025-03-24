@@ -73,7 +73,7 @@ return (
             >
             {
                 Images.map((images, index) => (
-                    <img src={images} key={index} alt='wow' style={{width:'60px', height:'60px', marginLeft:'40px',}} />
+                    <img src={images} key={index} alt='wow' style={{width:'40px', height:'45px', marginLeft:'40px',}} />
                 ))
             }
             </MotionBox>
