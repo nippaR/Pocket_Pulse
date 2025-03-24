@@ -32,7 +32,7 @@ const InvestmentProjects = () => {
   );
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ mt: 5, mb:10 }}>
       <Typography variant="h4" fontWeight="bold" sx={{ mt: 3, mb: 2 }}>
         Investment Projects
       </Typography>
@@ -55,6 +55,7 @@ const InvestmentProjects = () => {
         ))}
       </Grid>
     </Container>
+
   );
 };
 

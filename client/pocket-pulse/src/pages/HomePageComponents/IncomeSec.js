@@ -55,7 +55,7 @@ return (
                             borderRadius:2
                             }}
                             onClick={() => {
-                            navigate('/investment-projects');
+                            navigate('/records');
                             handleRefresh();
                             }}
                             >
