@@ -28,7 +28,7 @@ const SignUpPage = () => {
     // Perform your sign-up logic here
     console.log('Signing up with:', email, password, confirm);
     // If success, navigate somewhere
-    navigate('/records');
+    navigate('/');
   };
 
   return (
