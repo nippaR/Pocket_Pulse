@@ -10,7 +10,9 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import Community from './pages/Community';
 import DonationRequestForm from './pages/DonationRequestForm';
-import InvestmentProjects from './pages/Invenstment';
+import InvestmentProjects from './pages/Invenstment'; 
+import StartupPage from './pages/StartupPage';  // Import StartupPage
+
 
 function App() {
   return (
@@ -23,7 +25,7 @@ function App() {
 function MainContent() {
   const location = useLocation();
 
-  const noHeaderFooterPaths = ['/login', '/records','/signin','/signup','/what-if','/income','/community'];
+  const noHeaderFooterPaths = ['/login', '/records', '/signin', '/signup', '/what-if', '/income', '/community'];
   const isNoHeaderFooterPage = noHeaderFooterPaths.includes(location.pathname);
 
   return (
@@ -40,9 +42,10 @@ function MainContent() {
         <Route path="/edit-income/:rowIndex" element={<EditIncomePage />} />
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/community" element={<Community/>}/>
+        <Route path="/community" element={<Community />} />
         <Route path="/donation-request" element={<DonationRequestForm />} />
         <Route path="/investment-projects" element={<InvestmentProjects />} />
+        <Route path="/startup-a" element={<StartupPage />} /> 
       </Routes>
     </>
   );
