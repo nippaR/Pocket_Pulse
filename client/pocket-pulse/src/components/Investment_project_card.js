@@ -1,7 +1,14 @@
 import React from "react";
 import { Card, CardContent, CardActions, Button, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+
 
 const ProjectCard = ({ project }) => {
+
+  const navigate = useNavigate();
+
+
   return (
     <Card
       sx={{
@@ -24,7 +31,11 @@ const ProjectCard = ({ project }) => {
       </CardContent>
 
       <CardActions sx={{ justifyContent: "center" }}>
-        <Button variant="contained" color="primary" size="small">
+        <Button variant="contained" color="primary" size="small"
+        onClick={ () =>{
+          navigate('/startup-a');
+        }}
+        >
           Invest
         </Button>
       </CardActions>
