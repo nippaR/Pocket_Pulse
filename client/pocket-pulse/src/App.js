@@ -11,6 +11,7 @@ import SignUpPage from './pages/SignUpPage';
 import Community from './pages/Community';
 import DonationRequestForm from './pages/DonationRequestForm';
 import InvestmentProjects from './pages/Invenstment';
+import Footer from './components/FooterPage';
 
 function App() {
   return (
