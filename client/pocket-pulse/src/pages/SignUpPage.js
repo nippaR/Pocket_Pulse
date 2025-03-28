@@ -29,11 +29,7 @@ const SignUpPage = () => {
   const handleSignUp = () => {
     // Perform your sign-up logic here
     console.log('Signing up with:', email, password, confirm);
-<<<<<<< HEAD
-    // If success, navigate to Home page
-=======
-    // If success, navigate somewhere
->>>>>>> main
+
     navigate('/');
   };
 
