@@ -21,7 +21,9 @@ import {
   ListItemButton,
   ListItemText,
   Divider,
-  Badge
+  Badge,
+  Popover,
+  TextField,
 } from '@mui/material';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
@@ -30,7 +32,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
@@ -170,10 +172,13 @@ function IncomeRecordsPage() {
   const [incomeList, setIncomeList] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showSyncBanner, setShowSyncBanner] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchVisible, setSearchVisible] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Load/reload data from local storage
   useEffect(() => {
     const stored = localStorage.getItem('incomesRecords');
     if (stored) {
@@ -195,22 +200,35 @@ function IncomeRecordsPage() {
     console.log('Refresh clicked!');
   };
 
-  // Navigate to add income page
   const handleAddIncome = () => {
     navigate('/income');
   };
 
-  // Navigate to scenario planner
   const handleWhatIf = () => {
     navigate('/what-if');
   };
 
-  // Filter icon placeholder
-  const handleFilter = () => {
-    console.log('Filter icon clicked!');
+  // When search icon is clicked, toggle search bar visibility
+  const handleSearchIconClick = () => {
+    setSearchVisible(!searchVisible);
   };
 
-  // PDF report generation
+  // Search input change handler
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter incomeList based on search query (case-insensitive)
+  const filteredIncomeList = incomeList.filter((record) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      record.dateReceived?.toLowerCase().includes(query) ||
+      record.type?.toLowerCase().includes(query) ||
+      record.category?.toLowerCase().includes(query) ||
+      record.payer?.toLowerCase().includes(query)
+    );
+  });
+
   const handleReport = () => {
     console.log('Report icon clicked! Generating PDF...');
     const doc = new jsPDF('p', 'pt', 'a4');
@@ -218,7 +236,6 @@ function IncomeRecordsPage() {
     doc.text('Pocket pulse.', 50, 40);
     doc.setFontSize(14);
     doc.text('Income Records.', 50, 60);
-
     const tableColumn = ['Date', 'Type', 'Category', 'Vendor/Payer', 'Amount'];
     const tableRows = [];
     incomeList.forEach((item) => {
@@ -231,7 +248,6 @@ function IncomeRecordsPage() {
       ];
       tableRows.push(rowData);
     });
-
     doc.autoTable({
       startY: 80,
       head: [tableColumn],
@@ -239,14 +255,12 @@ function IncomeRecordsPage() {
       theme: 'grid',
       headStyles: { fillColor: [220, 220, 220] },
     });
-
     const pageHeight = doc.internal.pageSize.getHeight();
     doc.setFontSize(16);
     doc.text('Pocket pulse.', 50, pageHeight - 40);
     doc.output('dataurlnewwindow');
   };
 
-  // Select/unselect all rows
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       const allIndices = incomeList.map((_, index) => index);
@@ -256,7 +270,6 @@ function IncomeRecordsPage() {
     }
   };
 
-  // Toggle a single row
   const handleRowCheckboxChange = (index) => {
     if (selectedRows.includes(index)) {
       setSelectedRows(selectedRows.filter((i) => i !== index));
@@ -265,12 +278,10 @@ function IncomeRecordsPage() {
     }
   };
 
-  // Edit a record
   const handleEdit = (index) => {
     navigate(`/edit-income/${index}`);
   };
 
-  // Delete a record
   const handleDelete = (delIndex) => {
     const updatedList = incomeList.filter((_, i) => i !== delIndex);
     setIncomeList(updatedList);
@@ -323,7 +334,6 @@ function IncomeRecordsPage() {
             <IconButton sx={{ color: '#fff' }}>
               <NotificationsNoneIcon />
             </IconButton>
-            {/* Profile avatar: direct nav to /signin */}
             <IconButton onClick={handleProfileClick}>
               <Avatar src="/images/profile.jpg" alt="Profile" />
             </IconButton>
@@ -342,8 +352,8 @@ function IncomeRecordsPage() {
             <Button variant="outlined" onClick={handleWhatIf}>
               What If
             </Button>
-            <IconButton onClick={handleFilter}>
-              <FilterAltOutlinedIcon />
+            <IconButton onClick={handleSearchIconClick}>
+              <SearchIcon />
             </IconButton>
             <IconButton onClick={handleReport}>
               <SummarizeIcon />
@@ -359,6 +369,19 @@ function IncomeRecordsPage() {
           </Box>
         </Box>
 
+        {/* Display search bar if searchVisible is true */}
+        {searchVisible && (
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Search by Date, Type, Category, Vendor/Payer"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </Box>
+        )}
+
         {showSyncBanner && (
           <Paper sx={{ p: 2, mb: 2, backgroundColor: '#e8f5e9' }}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -372,7 +395,7 @@ function IncomeRecordsPage() {
           </Paper>
         )}
 
-        {/* Table of incomes */}
+        {/* Table of incomes using filtered records */}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -399,7 +422,7 @@ function IncomeRecordsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {incomeList.map((item, index) => {
+              {filteredIncomeList.map((item, index) => {
                 const isSelected = selectedRows.includes(index);
                 return (
                   <TableRow key={index}>
@@ -436,7 +459,7 @@ function IncomeRecordsPage() {
                   </TableRow>
                 );
               })}
-              {incomeList.length === 0 && (
+              {filteredIncomeList.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
                     No income records found.
