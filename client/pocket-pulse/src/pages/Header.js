@@ -41,7 +41,7 @@ const handleRefresh = () => {
               </Button>
 
               <Button  onClick={handleRefresh} sx={{ml:5, mt:2}}>
-                  <RouterLink to="/community" style={{ textDecoration: 'none', color:'#ffffff', fontSize:'13.5px' }}>Social Funds</RouterLink>
+                  <RouterLink to="/community" style={{ textDecoration: 'none', color:'#ffffff', fontSize:'13.5px' }}>Community</RouterLink>
               </Button>
 
               </Box>
