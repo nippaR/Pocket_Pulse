@@ -13,6 +13,9 @@ import DonationRequestForm from './pages/DonationRequestForm';
 import InvestmentProjects from './pages/Invenstment';
 import Footer from './components/FooterPage';
 
+import CreateRegularPostPage from './pages/CreateRegularPostPage'; // Create Post page
+import EditDonationRequestPage from './pages/EditDonationRequestPage';
+import EditRegularPostPage from './pages/EditRegularPostPage';
 function App() {
   return (
     <BrowserRouter>
@@ -44,6 +47,9 @@ function MainContent() {
         <Route path="/community" element={<Community />} />
         <Route path="/donation-request" element={<DonationRequestForm />} />
         <Route path="/investment-projects" element={<InvestmentProjects />} />
+        <Route path="/create-post" element={<CreateRegularPostPage />} />
+        <Route path="/edit-donation-request/:Id" element={<EditDonationRequestPage />} />
+        <Route path="/edit-regular-post/:postId" element={<EditRegularPostPage />} />
       </Routes>
 
       {!isNoHeaderFooterPage && <Footer />}
