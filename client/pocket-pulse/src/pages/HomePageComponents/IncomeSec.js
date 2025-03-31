@@ -22,7 +22,8 @@ return (
                                 fontWeight: '700',
                                 padding: '10% 0 0 10%'}}>
                 Manage your <br/>
-                incomes and Grow<br/>
+                incomes/expenses <br/> 
+                   and Grow<br/>
                 Financial Health
                 <Typography variant='h2' sx={{color:'#cca354'}}>and Make Fast<br/>
                 Money</Typography>

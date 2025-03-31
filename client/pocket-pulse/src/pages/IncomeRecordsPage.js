@@ -22,7 +22,6 @@ import {
   ListItemText,
   Divider,
   Badge,
-  Popover,
   TextField,
 } from '@mui/material';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -40,7 +39,6 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-// Updated Sidebar component with "Goal setting" instead of "Expense tracking"
 const Sidebar = () => {
   return (
     <Box
@@ -79,7 +77,6 @@ const Sidebar = () => {
 
           <ListItem disablePadding>
             <ListItemButton>
-              {/* Changed from Expense tracking to Goal setting */}
               <ListItemText primary="Goal setting" />
             </ListItemButton>
           </ListItem>
@@ -108,7 +105,7 @@ const Sidebar = () => {
               <ListItemText
                 primary={
                   <Typography sx={{ color: '#fff', fontWeight: 'bold' }}>
-                    Incomes
+                    Income & Expense
                   </Typography>
                 }
               />
@@ -204,11 +201,16 @@ function IncomeRecordsPage() {
     navigate('/income');
   };
 
+  // Details button now navigates to the graphs page ("/graphs")
+  const handleDetails = () => {
+    navigate('/graphs');
+  };
+
   const handleWhatIf = () => {
     navigate('/what-if');
   };
 
-  // When search icon is clicked, toggle search bar visibility
+  // Toggle search bar visibility
   const handleSearchIconClick = () => {
     setSearchVisible(!searchVisible);
   };
@@ -235,7 +237,7 @@ function IncomeRecordsPage() {
     doc.setFontSize(20);
     doc.text('Pocket pulse.', 50, 40);
     doc.setFontSize(14);
-    doc.text('Income Records.', 50, 60);
+    doc.text('Income & Expense Records.', 50, 60);
     const tableColumn = ['Date', 'Type', 'Category', 'Vendor/Payer', 'Amount'];
     const tableRows = [];
     incomeList.forEach((item) => {
@@ -293,7 +295,7 @@ function IncomeRecordsPage() {
     console.log(`Deleted record #${delIndex}`);
   };
 
-  // Directly navigate to Sign In page on profile click
+  // Navigate to Sign In page on profile click
   const handleProfileClick = () => {
     navigate('/signin');
   };
@@ -316,7 +318,7 @@ function IncomeRecordsPage() {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Incomes
+            Income & Expense
           </Typography>
           <Box display="flex" alignItems="center" gap={2}>
             <Box
@@ -341,15 +343,21 @@ function IncomeRecordsPage() {
         </Box>
 
         {/* Tier 2 Top Bar */}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={2}
-        >
-          <Typography variant="h4">Incomes</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h4">Income & Expense</Typography>
           <Box display="flex" alignItems="center" gap={1}>
-            <Button variant="outlined" onClick={handleWhatIf}>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: '#283593' }}
+              onClick={handleDetails}
+            >
+              Details
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: '#283593' }}
+              onClick={handleWhatIf}
+            >
               What If
             </Button>
             <IconButton onClick={handleSearchIconClick}>
@@ -364,7 +372,7 @@ function IncomeRecordsPage() {
               startIcon={<AddIcon />}
               onClick={handleAddIncome}
             >
-              Add Income
+              Add Records
             </Button>
           </Box>
         </Box>
@@ -395,7 +403,7 @@ function IncomeRecordsPage() {
           </Paper>
         )}
 
-        {/* Table of incomes using filtered records */}
+        {/* Table of records using filtered list */}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -403,12 +411,10 @@ function IncomeRecordsPage() {
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={
-                      selectedRows.length === incomeList.length &&
-                      incomeList.length > 0
+                      selectedRows.length === incomeList.length && incomeList.length > 0
                     }
                     indeterminate={
-                      selectedRows.length > 0 &&
-                      selectedRows.length < incomeList.length
+                      selectedRows.length > 0 && selectedRows.length < incomeList.length
                     }
                     onChange={handleSelectAll}
                   />
@@ -433,21 +439,20 @@ function IncomeRecordsPage() {
                       />
                     </TableCell>
                     <TableCell>{item.dateReceived || 'N/A'}</TableCell>
-                    <TableCell>{item.type || 'Income'}</TableCell>
+                    <TableCell>
+                      <Typography sx={{ color: item.type === 'Expense' ? 'red' : 'green' }}>
+                        {item.type || 'Income'}
+                      </Typography>
+                    </TableCell>
                     <TableCell>{item.category || 'Rent'}</TableCell>
                     <TableCell>{item.payer || 'John Doe'}</TableCell>
                     <TableCell>
-                      {item.amount
-                        ? `$ ${Number(item.amount).toLocaleString()}`
-                        : '$ 1,000.00'}
+                      {item.amount ? `$ ${Number(item.amount).toLocaleString()}` : '$ 1,000.00'}
                     </TableCell>
                     <TableCell align="center">
                       {isSelected && (
                         <>
-                          <IconButton
-                            sx={{ mr: 1 }}
-                            onClick={() => handleEdit(index)}
-                          >
+                          <IconButton sx={{ mr: 1 }} onClick={() => handleEdit(index)}>
                             <EditIcon />
                           </IconButton>
                           <IconButton onClick={() => handleDelete(index)}>

@@ -11,10 +11,9 @@ import {
   InputLabel,
   FormControl,
   Alert,
-  OutlinedInput,
 } from '@mui/material';
 
-const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
+const IncomeForm = ({ onAddIncome, onBack, maxDate, selectedType }) => {
   const [formData, setFormData] = useState({
     amount: '',
     category: '',
@@ -22,17 +21,31 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
     dateReceived: '',
     description: '',
     associatedRental: '',
-    file: null,
+    file: null, // Receipt/Invoice file
   });
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Handle input changes
+  // Prevent typing the minus key in the amount field
+  const handleAmountKeyDown = (e) => {
+    if (e.key === '-' || e.key === 'Subtract') {
+      e.preventDefault();
+    }
+  };
+
+  // Handle field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // For description, enforce max 40 words as user types
+    if (name === 'description') {
+      const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
+      if (wordCount > 40) {
+        return; // Prevent updating state if over limit
+      }
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle file input separately
+  // Handle file change
   const handleFileChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -40,48 +53,44 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
     }));
   };
 
-  // Validate required fields before submission
+  // Validate fields before submission
   const validateForm = () => {
-    // Required fields: amount, category, payer, dateReceived
     if (!formData.amount || !formData.category || !formData.payer || !formData.dateReceived) {
       return 'Please fill in all required fields (Amount, Category, Payer, Date Received).';
     }
-    // Additional validations (e.g., amount should be non-negative) can be added here.
     const amountNum = parseFloat(formData.amount);
-    if (isNaN(amountNum) || amountNum < 0) {
-      return 'Amount must be a non-negative number.';
+    if (isNaN(amountNum)) {
+      return 'Amount must be a valid number.';
     }
-    // Date validation: Although maxDate prevents future dates from calendar,
-    // we add a check here too.
+    if (amountNum < 0) {
+      return 'Amount cannot be negative.';
+    }
+    // Date validation: ensure selected date is not in the future
     const selectedDate = new Date(formData.dateReceived);
     const today = new Date();
     if (selectedDate > today) {
       return 'Date Received cannot be in the future.';
     }
-    // Description: if provided, should be 30 words or fewer.
+    // Description: must be 40 words or fewer
     if (formData.description) {
       const wordCount = formData.description.trim().split(/\s+/).filter(Boolean).length;
-      if (wordCount > 30) {
-        return 'Description must be 30 words or fewer.';
+      if (wordCount > 40) {
+        return 'Description must be 40 words or fewer.';
       }
     }
-    return ''; // No errors
+    return '';
   };
 
-  // Common handler for form submission
+  // Handle form submission; "addAnother" distinguishes the two buttons
   const handleSubmit = (e, addAnother = false) => {
     e.preventDefault();
     const error = validateForm();
     if (error) {
       setErrorMessage(error);
-      return; // Do not submit if there is an error.
+      return;
     }
-    // Clear error if validation passes.
     setErrorMessage('');
-    // Call parent's function to add the income record.
     onAddIncome(formData, addAnother);
-
-    // Clear form fields only if "Save & Add Another" is clicked.
     if (addAnother) {
       setFormData({
         amount: '',
@@ -95,6 +104,9 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
     }
   };
 
+  // Dynamic title based on selected type
+  const formTitle = selectedType === 'Expense' ? 'Add Expense' : 'Add Income';
+
   return (
     <Box
       component="form"
@@ -102,13 +114,12 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
       onSubmit={(e) => handleSubmit(e, false)}
     >
       <Typography variant="h6" gutterBottom>
-        Add Income
+        {formTitle}
       </Typography>
       <Typography variant="body2" paragraph>
-        Log any payments received while owning and operating your rentals.
+        Log any payments received or expenses incurred while operating your rentals.
       </Typography>
 
-      {/* Display error message if validation fails */}
       {errorMessage && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {errorMessage}
@@ -126,6 +137,8 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
             type="number"
             value={formData.amount}
             onChange={handleChange}
+            onKeyDown={handleAmountKeyDown}
+            inputProps={{ min: 0 }}
           />
         </Grid>
 
@@ -140,9 +153,6 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
               value={formData.category}
               onChange={handleChange}
             >
-              <MenuItem value="">
-                <em>Select Category</em>
-              </MenuItem>
               <MenuItem value="Rent">Rent</MenuItem>
               <MenuItem value="Deposit">Deposit</MenuItem>
               <MenuItem value="Other">Other</MenuItem>
@@ -183,7 +193,7 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
             fullWidth
             multiline
             rows={3}
-            label="Description"
+            label="Description (max 40 words)"
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -201,9 +211,6 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
               value={formData.associatedRental}
               onChange={handleChange}
             >
-              <MenuItem value="">
-                <em>Select Rental</em>
-              </MenuItem>
               <MenuItem value="Property A">Property A</MenuItem>
               <MenuItem value="Property B">Property B</MenuItem>
               <MenuItem value="Property C">Property C</MenuItem>
@@ -211,7 +218,7 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
           </FormControl>
         </Grid>
 
-        {/* File Upload Field */}
+        {/* Receipt/Invoice File Field */}
         <Grid item xs={12}>
           <Typography variant="subtitle1" sx={{ mb: 1 }}>
             Attach a receipt or invoice
@@ -239,7 +246,6 @@ const IncomeForm = ({ onAddIncome, onBack, maxDate }) => {
         </Grid>
       </Grid>
 
-      {/* Buttons */}
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
         <Button variant="outlined" color="primary" onClick={onBack}>
           Back
