@@ -13,11 +13,13 @@ import DonationRequestForm from './pages/DonationRequestForm';
 import InvestmentProjects from './pages/Invenstment';
 import Footer from './components/FooterPage';
 
+
 import CreateRegularPostPage from './pages/CreateRegularPostPage'; // Create Post page
 import EditDonationRequestPage from './pages/EditDonationRequestPage';
 import EditRegularPostPage from './pages/EditRegularPostPage';
 import GraphViewPage from './pages/GraphViewPage';
 function App() {
+  
   return (
     <BrowserRouter>
       <MainContent />
@@ -53,6 +55,7 @@ function MainContent() {
         <Route path="/edit-regular-post/:postId" element={<EditRegularPostPage />} />
         <Route path="/graphs" element={<GraphViewPage />} />
       </Routes>
+
 
       {!isNoHeaderFooterPage && <Footer />}
     </>
