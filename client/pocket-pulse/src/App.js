@@ -16,6 +16,7 @@ import Footer from './components/FooterPage';
 import CreateRegularPostPage from './pages/CreateRegularPostPage'; // Create Post page
 import EditDonationRequestPage from './pages/EditDonationRequestPage';
 import EditRegularPostPage from './pages/EditRegularPostPage';
+import GraphViewPage from './pages/GraphViewPage';
 function App() {
   return (
     <BrowserRouter>
@@ -50,6 +51,7 @@ function MainContent() {
         <Route path="/create-post" element={<CreateRegularPostPage />} />
         <Route path="/edit-donation-request/:Id" element={<EditDonationRequestPage />} />
         <Route path="/edit-regular-post/:postId" element={<EditRegularPostPage />} />
+        <Route path="/graphs" element={<GraphViewPage />} />
       </Routes>
 
       {!isNoHeaderFooterPage && <Footer />}
