@@ -19,6 +19,11 @@ import CreateRegularPostPage from './pages/CreateRegularPostPage'; // Create Pos
 import EditDonationRequestPage from './pages/EditDonationRequestPage';
 import EditRegularPostPage from './pages/EditRegularPostPage';
 import GraphViewPage from './pages/GraphViewPage';
+import TransHome from './pages/Transaction/TransHome'
+// import Createpro from './pages/investment-project/Createpro';
+// import Viewpro from './pages/investment-project/Viewpro';
+// import InvestmentDetails from './pages/investment-project/InvestmentDetails';
+
 function App() {
   
   return (
@@ -55,6 +60,11 @@ function MainContent() {
         <Route path="/edit-donation-request/:Id" element={<EditDonationRequestPage />} />
         <Route path="/edit-regular-post/:postId" element={<EditRegularPostPage />} />
         <Route path="/graphs" element={<GraphViewPage />} />
+        <Route path="/trans-home" element={<TransHome />} />
+        {/* <Route path="/create-pro" element={<Createpro />} />
+        <Route path="/view-pro" element={<Viewpro />} />
+        <Route path="/investment-details" element={<InvestmentDetails />} /> */}
+
       </Routes>
 
 
