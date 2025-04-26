@@ -6,6 +6,7 @@ import Metamask from './pages/Metamasklog';
 import IncomeManagement from './pages/IncomeManagement';
 import IncomeRecordsPage from './pages/IncomeRecordsPage';
 import EditIncomePage from './pages/EditIncomePage';
+
 import WhatIfScenarioPlanner from './pages/WhatIfScenarioPlanner';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
