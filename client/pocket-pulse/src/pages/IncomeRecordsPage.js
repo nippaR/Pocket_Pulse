@@ -21,7 +21,8 @@ import {
   ListItemButton,
   ListItemText,
   Divider,
-  Badge
+  Badge,
+  TextField,
 } from '@mui/material';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
@@ -30,7 +31,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
@@ -38,7 +39,6 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-// Updated Sidebar component with "Goal setting" instead of "Expense tracking"
 const Sidebar = () => {
   return (
     <Box
@@ -77,7 +77,6 @@ const Sidebar = () => {
 
           <ListItem disablePadding>
             <ListItemButton>
-              {/* Changed from Expense tracking to Goal setting */}
               <ListItemText primary="Goal setting" />
             </ListItemButton>
           </ListItem>
@@ -106,7 +105,7 @@ const Sidebar = () => {
               <ListItemText
                 primary={
                   <Typography sx={{ color: '#fff', fontWeight: 'bold' }}>
-                    Incomes
+                    Income & Expense
                   </Typography>
                 }
               />
@@ -170,10 +169,13 @@ function IncomeRecordsPage() {
   const [incomeList, setIncomeList] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showSyncBanner, setShowSyncBanner] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchVisible, setSearchVisible] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Load/reload data from local storage
   useEffect(() => {
     const stored = localStorage.getItem('incomesRecords');
     if (stored) {
@@ -195,30 +197,47 @@ function IncomeRecordsPage() {
     console.log('Refresh clicked!');
   };
 
-  // Navigate to add income page
   const handleAddIncome = () => {
     navigate('/income');
   };
 
-  // Navigate to scenario planner
+  // Details button now navigates to the graphs page ("/graphs")
+  const handleDetails = () => {
+    navigate('/graphs');
+  };
+
   const handleWhatIf = () => {
     navigate('/what-if');
   };
 
-  // Filter icon placeholder
-  const handleFilter = () => {
-    console.log('Filter icon clicked!');
+  // Toggle search bar visibility
+  const handleSearchIconClick = () => {
+    setSearchVisible(!searchVisible);
   };
 
-  // PDF report generation
+  // Search input change handler
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter incomeList based on search query (case-insensitive)
+  const filteredIncomeList = incomeList.filter((record) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      record.dateReceived?.toLowerCase().includes(query) ||
+      record.type?.toLowerCase().includes(query) ||
+      record.category?.toLowerCase().includes(query) ||
+      record.payer?.toLowerCase().includes(query)
+    );
+  });
+
   const handleReport = () => {
     console.log('Report icon clicked! Generating PDF...');
     const doc = new jsPDF('p', 'pt', 'a4');
     doc.setFontSize(20);
     doc.text('Pocket pulse.', 50, 40);
     doc.setFontSize(14);
-    doc.text('Income Records.', 50, 60);
-
+    doc.text('Income & Expense Records.', 50, 60);
     const tableColumn = ['Date', 'Type', 'Category', 'Vendor/Payer', 'Amount'];
     const tableRows = [];
     incomeList.forEach((item) => {
@@ -231,7 +250,6 @@ function IncomeRecordsPage() {
       ];
       tableRows.push(rowData);
     });
-
     doc.autoTable({
       startY: 80,
       head: [tableColumn],
@@ -239,14 +257,12 @@ function IncomeRecordsPage() {
       theme: 'grid',
       headStyles: { fillColor: [220, 220, 220] },
     });
-
     const pageHeight = doc.internal.pageSize.getHeight();
     doc.setFontSize(16);
     doc.text('Pocket pulse.', 50, pageHeight - 40);
     doc.output('dataurlnewwindow');
   };
 
-  // Select/unselect all rows
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       const allIndices = incomeList.map((_, index) => index);
@@ -256,7 +272,6 @@ function IncomeRecordsPage() {
     }
   };
 
-  // Toggle a single row
   const handleRowCheckboxChange = (index) => {
     if (selectedRows.includes(index)) {
       setSelectedRows(selectedRows.filter((i) => i !== index));
@@ -265,12 +280,10 @@ function IncomeRecordsPage() {
     }
   };
 
-  // Edit a record
   const handleEdit = (index) => {
     navigate(`/edit-income/${index}`);
   };
 
-  // Delete a record
   const handleDelete = (delIndex) => {
     const updatedList = incomeList.filter((_, i) => i !== delIndex);
     setIncomeList(updatedList);
@@ -282,7 +295,7 @@ function IncomeRecordsPage() {
     console.log(`Deleted record #${delIndex}`);
   };
 
-  // Directly navigate to Sign In page on profile click
+  // Navigate to Sign In page on profile click
   const handleProfileClick = () => {
     navigate('/signin');
   };
@@ -305,7 +318,7 @@ function IncomeRecordsPage() {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Incomes
+            Income & Expense
           </Typography>
           <Box display="flex" alignItems="center" gap={2}>
             <Box
@@ -323,7 +336,6 @@ function IncomeRecordsPage() {
             <IconButton sx={{ color: '#fff' }}>
               <NotificationsNoneIcon />
             </IconButton>
-            {/* Profile avatar: direct nav to /signin */}
             <IconButton onClick={handleProfileClick}>
               <Avatar src="/images/profile.jpg" alt="Profile" />
             </IconButton>
@@ -331,19 +343,25 @@ function IncomeRecordsPage() {
         </Box>
 
         {/* Tier 2 Top Bar */}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={2}
-        >
-          <Typography variant="h4">Incomes</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h4">Income & Expense</Typography>
           <Box display="flex" alignItems="center" gap={1}>
-            <Button variant="outlined" onClick={handleWhatIf}>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: '#283593' }}
+              onClick={handleDetails}
+            >
+              Details
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: '#283593' }}
+              onClick={handleWhatIf}
+            >
               What If
             </Button>
-            <IconButton onClick={handleFilter}>
-              <FilterAltOutlinedIcon />
+            <IconButton onClick={handleSearchIconClick}>
+              <SearchIcon />
             </IconButton>
             <IconButton onClick={handleReport}>
               <SummarizeIcon />
@@ -354,10 +372,23 @@ function IncomeRecordsPage() {
               startIcon={<AddIcon />}
               onClick={handleAddIncome}
             >
-              Add Income
+              Add Records
             </Button>
           </Box>
         </Box>
+
+        {/* Display search bar if searchVisible is true */}
+        {searchVisible && (
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Search by Date, Type, Category, Vendor/Payer"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </Box>
+        )}
 
         {showSyncBanner && (
           <Paper sx={{ p: 2, mb: 2, backgroundColor: '#e8f5e9' }}>
@@ -372,7 +403,7 @@ function IncomeRecordsPage() {
           </Paper>
         )}
 
-        {/* Table of incomes */}
+        {/* Table of records using filtered list */}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -380,12 +411,10 @@ function IncomeRecordsPage() {
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={
-                      selectedRows.length === incomeList.length &&
-                      incomeList.length > 0
+                      selectedRows.length === incomeList.length && incomeList.length > 0
                     }
                     indeterminate={
-                      selectedRows.length > 0 &&
-                      selectedRows.length < incomeList.length
+                      selectedRows.length > 0 && selectedRows.length < incomeList.length
                     }
                     onChange={handleSelectAll}
                   />
@@ -399,7 +428,7 @@ function IncomeRecordsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {incomeList.map((item, index) => {
+              {filteredIncomeList.map((item, index) => {
                 const isSelected = selectedRows.includes(index);
                 return (
                   <TableRow key={index}>
@@ -410,21 +439,20 @@ function IncomeRecordsPage() {
                       />
                     </TableCell>
                     <TableCell>{item.dateReceived || 'N/A'}</TableCell>
-                    <TableCell>{item.type || 'Income'}</TableCell>
+                    <TableCell>
+                      <Typography sx={{ color: item.type === 'Expense' ? 'red' : 'green' }}>
+                        {item.type || 'Income'}
+                      </Typography>
+                    </TableCell>
                     <TableCell>{item.category || 'Rent'}</TableCell>
                     <TableCell>{item.payer || 'John Doe'}</TableCell>
                     <TableCell>
-                      {item.amount
-                        ? `$ ${Number(item.amount).toLocaleString()}`
-                        : '$ 1,000.00'}
+                      {item.amount ? `$ ${Number(item.amount).toLocaleString()}` : '$ 1,000.00'}
                     </TableCell>
                     <TableCell align="center">
                       {isSelected && (
                         <>
-                          <IconButton
-                            sx={{ mr: 1 }}
-                            onClick={() => handleEdit(index)}
-                          >
+                          <IconButton sx={{ mr: 1 }} onClick={() => handleEdit(index)}>
                             <EditIcon />
                           </IconButton>
                           <IconButton onClick={() => handleDelete(index)}>
@@ -436,7 +464,7 @@ function IncomeRecordsPage() {
                   </TableRow>
                 );
               })}
-              {incomeList.length === 0 && (
+              {filteredIncomeList.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
                     No income records found.

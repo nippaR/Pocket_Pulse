@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -8,19 +8,15 @@ import {
   Paper,
   Grid,
   MenuItem,
-  InputAdornment
+  InputAdornment,
+  Snackbar
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function DonationRequestForm() {
+function EditDonationRequestPage() {
   const navigate = useNavigate();
-
-  // Current user details (ensure these match your logged-in user)
-  const currentUserName = 'Emilia';
-  const currentUserProfilePic = 'https://via.placeholder.com/40';
-
-  // Compute today's date for the date picker
-  const today = new Date().toISOString().split('T')[0];
+  const { Id } = useParams(); // Ensure route param name matches your route ("/edit-donation-request/:Id")
+  const postId = Number(Id);
 
   // Form state variables
   const [eventName, setEventName] = useState('');
@@ -45,10 +41,13 @@ function DonationRequestForm() {
   const [areSponsorBenefits, setAreSponsorBenefits] = useState('');
   const [describeBenefits, setDescribeBenefits] = useState('');
 
-  // Validation error state
   const [errors, setErrors] = useState({});
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  // Dropdown options for provinces (example for Sri Lanka)
+  // For date picker minimum date (today)
+  const today = new Date().toISOString().split('T')[0];
+
+  // Provinces dropdown (example for Sri Lanka)
   const sriLankaProvinces = [
     'Western Province',
     'Central Province',
@@ -60,29 +59,73 @@ function DonationRequestForm() {
     'Sabaragamuwa Province'
   ];
 
-  // Validation function
+  // Load donation request post data on component mount
+  useEffect(() => {
+    const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
+    const donationPost = posts.find(
+      (post) => post.isDonationRequest && post.id === postId
+    );
+
+    if (donationPost && donationPost.formData) {
+      const fd = donationPost.formData;
+      setEventName(fd.eventName || '');
+      setEventDate(fd.eventDate || '');
+      setEventLocation(fd.eventLocation || '');
+      setOrganizationName(fd.organizationName || '');
+      setMissionStatement(fd.missionStatement || '');
+      setAddressLine1(fd.addressLine1 || '');
+      setAddressLine2(fd.addressLine2 || '');
+      setCity(fd.city || '');
+      setStateProvince(fd.stateProvince || '');
+      setZipCode(fd.zipCode || '');
+      setPhoneNo(fd.phoneNo || '');
+      setEmail(fd.email || '');
+      setWebsite(fd.website || '');
+      setTaxID(fd.taxID || '');
+      setTypeOfDonation(fd.typeOfDonation || '');
+      setAmountItemsRequest(fd.amountItemsRequest || '');
+      setPurposeDonation(fd.purposeDonation || '');
+      setBeneficiary(fd.beneficiary || '');
+      setExpectedAttendees(fd.expectedAttendees || '');
+      setAreSponsorBenefits(fd.areSponsorBenefits || '');
+      setDescribeBenefits(fd.describeBenefits || '');
+    } else {
+      alert('Donation request not found.');
+      navigate('/community');
+    }
+  }, [postId, navigate]);
+
+  // Validate form fields based on requirements
   const validate = () => {
     const newErrors = {};
+
+    // Event Date must be in the future (greater than today)
+    if (!eventDate.trim()) {
+      newErrors.eventDate = 'Event Date is required';
+    } else if (new Date(eventDate) <= new Date(today)) {
+      newErrors.eventDate = 'Event Date must be a future date';
+    }
+
     if (!eventName.trim()) newErrors.eventName = 'Event Name is required';
-    if (!eventDate.trim()) newErrors.eventDate = 'Event Date is required';
-    if (new Date(eventDate) <= new Date(today)) newErrors.eventDate = 'Event Date must be in the future';
     if (!eventLocation.trim()) newErrors.eventLocation = 'Event Location is required';
     if (!organizationName.trim()) newErrors.organizationName = 'Organization Name is required';
     if (!addressLine1.trim()) newErrors.addressLine1 = 'Address is required';
     if (!city.trim()) newErrors.city = 'City is required';
     if (!stateProvince.trim()) newErrors.stateProvince = 'Province is required';
 
-    // Postal Code: must be exactly 5 digits
-    if (zipCode.length !== 5) newErrors.zipCode = 'Zip/Postal Code must be exactly 5 digits';
+    // Zip/Postal Code: exactly 5 digits
+    if (zipCode.trim() && !/^\d{5}$/.test(zipCode)) {
+      newErrors.zipCode = 'Zip/Postal Code must be exactly 5 digits';
+    }
 
-    // Phone No: must be exactly 10 digits and start with 0
+    // Phone No: must start with 0 and be exactly 10 digits, only numeric allowed
     if (!phoneNo.trim()) {
       newErrors.phoneNo = 'Phone No is required';
     } else if (!/^0\d{9}$/.test(phoneNo)) {
-      newErrors.phoneNo = 'Phone No must start with 0 and be exactly 10 digits';
+      newErrors.phoneNo = 'Phone No must start with 0 and be 10 digits';
     }
 
-    // Email: basic regex validation
+    // Email: basic email regex validation
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
@@ -90,9 +133,7 @@ function DonationRequestForm() {
     }
 
     // Amount/Items Request: must be a number and cannot be negative
-    if (amountItemsRequest === '') {
-      newErrors.amountItemsRequest = 'Amount/Items Request is required';
-    } else {
+    if (amountItemsRequest !== '') {
       const amount = Number(amountItemsRequest);
       if (isNaN(amount)) {
         newErrors.amountItemsRequest = 'Amount/Items Request must be a number';
@@ -101,10 +142,8 @@ function DonationRequestForm() {
       }
     }
 
-    // Expected Attendees: must be a number and cannot be negative
-    if (expectedAttendees === '') {
-      newErrors.expectedAttendees = 'Expected Number of Attendees is required';
-    } else {
+    // Expected Number of Attendees: must be a number and cannot be negative
+    if (expectedAttendees !== '') {
       const attendees = Number(expectedAttendees);
       if (isNaN(attendees)) {
         newErrors.expectedAttendees = 'Expected Attendees must be a number';
@@ -117,12 +156,12 @@ function DonationRequestForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
+  // Handle form submission to update donation request
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const formData = {
+    const updatedFormData = {
       eventName,
       eventDate,
       eventLocation,
@@ -146,33 +185,31 @@ function DonationRequestForm() {
       describeBenefits
     };
 
-    // Retrieve existing posts from localStorage, add the new donation request post, and store it back
-    const existingPosts = JSON.parse(localStorage.getItem('communityPosts')) || [];
-    const newPost = {
-      id: Date.now(),
-      isDonationRequest: true,
-      authorName: currentUserName,
-      authorProfilePic: currentUserProfilePic,
-      timestamp: Date.now(),
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      currentDonation: 0, // initial donation amount
-      formData
-    };
+    // Retrieve posts from localStorage
+    const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
+    const updatedPosts = posts.map((post) => {
+      if (post.id === postId && post.isDonationRequest) {
+        return { ...post, formData: updatedFormData, timestamp: Date.now() };
+      }
+      return post;
+    });
 
-    const updatedPosts = [newPost, ...existingPosts];
     localStorage.setItem('communityPosts', JSON.stringify(updatedPosts));
 
-    console.log('Donation Request Submitted:', formData);
-    navigate('/community');
+    // Show success message using Snackbar
+    setOpenSnackbar(true);
+
+    // After a short delay, navigate to the Community page
+    setTimeout(() => {
+      navigate('/community');
+    }, 1500);
   };
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Paper sx={{ p: 3 }}>
         <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
-          Donation Request Form
+          Edit Donation Request Form
         </Typography>
         <form onSubmit={handleSubmit}>
           {/* TOP SECTION: Event Details */}
@@ -298,16 +335,10 @@ function DonationRequestForm() {
                   variant="outlined"
                   fullWidth
                   value={zipCode}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Allow only digits and limit to 5 characters
-                    if (/^\d{0,5}$/.test(value)) {
-                      setZipCode(value);
-                    }
-                  }}
+                  onChange={(e) => setZipCode(e.target.value)}
                   error={!!errors.zipCode}
-                  helperText={errors.zipCode || 'Zip/Postal Code must be exactly 5 digits'}
-                  inputProps={{ maxLength: 5 }}
+                  helperText={errors.zipCode}
+                  inputProps={{ maxLength: 5, pattern: "[0-9]*" }}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -317,16 +348,19 @@ function DonationRequestForm() {
                   type="tel"
                   fullWidth
                   value={phoneNo}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Allow only digits, limit to 10 characters
-                    if (/^\d{0,10}$/.test(value)) {
-                      setPhoneNo(value);
+                  onChange={(e) => setPhoneNo(e.target.value)}
+                  inputProps={{
+                    maxLength: 10,
+                    pattern: "\\d*",
+                    onKeyPress: (e) => {
+                      // Allow only numbers
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
                     }
                   }}
                   error={!!errors.phoneNo}
-                  helperText={errors.phoneNo || 'Phone No must start with 0 and be exactly 10 digits'}
-                  inputProps={{ maxLength: 10 }}
+                  helperText={errors.phoneNo}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -384,17 +418,12 @@ function DonationRequestForm() {
                   type="number"
                   fullWidth
                   value={amountItemsRequest}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Allow only non-negative numbers (no minus sign)
-                    if (/^\d*$/.test(value)) {
-                      setAmountItemsRequest(value);
-                    }
-                  }}
+                  onChange={(e) => setAmountItemsRequest(e.target.value)}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">USD</InputAdornment>,
                     min: 0,
                     onKeyPress: (e) => {
+                      // Prevent entering the minus sign
                       if (e.key === '-') e.preventDefault();
                     }
                   }}
@@ -450,13 +479,7 @@ function DonationRequestForm() {
                   type="number"
                   fullWidth
                   value={expectedAttendees}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Allow only non-negative digits
-                    if (/^\d*$/.test(value)) {
-                      setExpectedAttendees(value);
-                    }
-                  }}
+                  onChange={(e) => setExpectedAttendees(e.target.value)}
                   error={!!errors.expectedAttendees}
                   helperText={errors.expectedAttendees}
                   inputProps={{
@@ -515,13 +538,19 @@ function DonationRequestForm() {
               Back
             </Button>
             <Button variant="contained" type="submit">
-              Submit & Post
+              Save Changes
             </Button>
           </Box>
         </form>
       </Paper>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={1500}
+        onClose={() => setOpenSnackbar(false)}
+        message="Donation request updated successfully!"
+      />
     </Container>
   );
 }
 
-export default DonationRequestForm;
+export default EditDonationRequestPage;

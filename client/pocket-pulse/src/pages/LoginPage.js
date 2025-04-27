@@ -7,11 +7,13 @@ import {
   Divider,
   IconButton,
   InputAdornment,
-  Link,
   TextField,
-  Typography
+  Typography,
+  Link
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -26,7 +28,6 @@ const LoginPage = () => {
   const handleLogin = () => {
     // Perform your login logic here
     console.log('Logging in with:', email, password);
-
     // If success, navigate to Home page
     navigate('/');
   };
@@ -108,6 +109,7 @@ const LoginPage = () => {
         variant="outlined"
         fullWidth
         sx={{ mb: 2, textTransform: 'none' }}
+        startIcon={<FacebookIcon />}
         onClick={() => console.log('Login with Facebook')}
       >
         Login with Facebook
@@ -117,6 +119,7 @@ const LoginPage = () => {
         variant="outlined"
         fullWidth
         sx={{ textTransform: 'none' }}
+        startIcon={<GoogleIcon />}
         onClick={() => console.log('Login with Google')}
       >
         Login with Google

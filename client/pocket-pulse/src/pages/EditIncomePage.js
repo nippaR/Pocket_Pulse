@@ -16,11 +16,12 @@ import {
 } from '@mui/material';
 
 function EditIncomePage() {
-  const { rowIndex } = useParams(); // Get the index from URL (e.g. /edit-income/2)
+  const { rowIndex } = useParams();
   const navigate = useNavigate();
 
-  // Local state for the form data
+  // Local state for form data (including type)
   const [formData, setFormData] = useState({
+    type: 'Income',
     amount: '',
     category: '',
     payer: '',
@@ -30,10 +31,9 @@ function EditIncomePage() {
     file: null,
   });
 
-  // State for error messages (validation failures)
   const [errorMessage, setErrorMessage] = useState('');
 
-  // On mount, load the record from local storage and pre-fill the form
+  // On mount, load record from local storage
   useEffect(() => {
     const stored = localStorage.getItem('incomesRecords');
     if (stored) {
@@ -41,6 +41,7 @@ function EditIncomePage() {
       if (incomeList[rowIndex]) {
         const record = incomeList[rowIndex];
         setFormData({
+          type: record.type || 'Income',
           amount: record.amount || '',
           category: record.category || '',
           payer: record.payer || '',
@@ -53,13 +54,26 @@ function EditIncomePage() {
     }
   }, [rowIndex]);
 
-  // Handler for input changes
+  // Prevent typing the minus key in the amount field
+  const handleAmountKeyDown = (e) => {
+    if (e.key === '-' || e.key === 'Subtract') {
+      e.preventDefault();
+    }
+  };
+
+  // Handle field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'description') {
+      const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
+      if (wordCount > 40) {
+        return;
+      }
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handler for file changes
+  // Handle file change
   const handleFileChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -67,15 +81,14 @@ function EditIncomePage() {
     }));
   };
 
-  // Handler for Save button with validations
+  // Validate form before saving
   const handleSave = (e) => {
     e.preventDefault();
-    setErrorMessage(''); // Clear previous errors
+    setErrorMessage('');
 
-    // 1. Validate Amount: Must be a valid number and not negative.
     const amountNum = parseFloat(formData.amount);
     if (isNaN(amountNum)) {
-      setErrorMessage('Amount must be a valid number in USD.');
+      setErrorMessage('Amount must be a valid number.');
       return;
     }
     if (amountNum < 0) {
@@ -83,47 +96,44 @@ function EditIncomePage() {
       return;
     }
 
-    // 2. Validate Date: Must not be a future date.
     const dateObj = new Date(formData.dateReceived);
+    const today = new Date();
     if (isNaN(dateObj.getTime())) {
       setErrorMessage('Please provide a valid date.');
       return;
     }
-    const today = new Date();
-    const dateOnly = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
-    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    if (dateOnly > todayOnly) {
+    if (dateObj > today) {
       setErrorMessage('Date cannot be in the future.');
       return;
     }
 
-    // 3. Validate Description: Must be 30 words or fewer.
     const wordCount = formData.description.trim().split(/\s+/).filter(Boolean).length;
-    if (wordCount > 30) {
-      setErrorMessage('Description must be 30 words or fewer.');
+    if (wordCount > 40) {
+      setErrorMessage('Description must be 40 words or fewer.');
       return;
     }
 
-    // All validations passed, so update the record in local storage.
     const stored = localStorage.getItem('incomesRecords');
     if (stored) {
       const incomeList = JSON.parse(stored);
-      // Replace the record at the given index with updated formData.
       incomeList[rowIndex] = { ...formData };
       localStorage.setItem('incomesRecords', JSON.stringify(incomeList));
     }
-    
-    // Navigate back to the records page, passing a flag if needed.
+
     navigate('/records', { state: { updated: true } });
+  };
+
+  // Back button handler to navigate to income records page
+  const handleBack = () => {
+    navigate('/records');
   };
 
   return (
     <Container sx={{ my: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Edit Income
+        Edit Income & Expense
       </Typography>
 
-      {/* Display an error alert if validation fails */}
       {errorMessage && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {errorMessage}
@@ -136,7 +146,24 @@ function EditIncomePage() {
         onSubmit={handleSave}
       >
         <Grid container spacing={2}>
-          {/* Amount */}
+          {/* Type Field */}
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth required>
+              <InputLabel id="type-label">Type</InputLabel>
+              <Select
+                labelId="type-label"
+                label="Type"
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+              >
+                <MenuItem value="Income">Income</MenuItem>
+                <MenuItem value="Expense">Expense</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Amount Field */}
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -146,10 +173,12 @@ function EditIncomePage() {
               type="number"
               value={formData.amount}
               onChange={handleChange}
+              onKeyDown={handleAmountKeyDown}
+              inputProps={{ min: 0 }}
             />
           </Grid>
 
-          {/* Category */}
+          {/* Category Field */}
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth required>
               <InputLabel id="category-label">Category</InputLabel>
@@ -168,7 +197,7 @@ function EditIncomePage() {
             </FormControl>
           </Grid>
 
-          {/* Payer */}
+          {/* Payer Field */}
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -180,7 +209,7 @@ function EditIncomePage() {
             />
           </Grid>
 
-          {/* Date Received */}
+          {/* Date Received Field */}
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -195,20 +224,20 @@ function EditIncomePage() {
             />
           </Grid>
 
-          {/* Description */}
+          {/* Description Field */}
           <Grid item xs={12}>
             <TextField
               fullWidth
               multiline
               rows={3}
-              label="Description"
+              label="Description (max 40 words)"
               name="description"
               value={formData.description}
               onChange={handleChange}
             />
           </Grid>
 
-          {/* Associated Rental */}
+          {/* Associated Rental Field */}
           <Grid item xs={12}>
             <FormControl fullWidth required>
               <InputLabel id="rental-label">Associated Rental</InputLabel>
@@ -227,7 +256,7 @@ function EditIncomePage() {
             </FormControl>
           </Grid>
 
-          {/* File Upload */}
+          {/* File Upload Field */}
           <Grid item xs={12}>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Attach a receipt or invoice
@@ -255,8 +284,10 @@ function EditIncomePage() {
           </Grid>
         </Grid>
 
-        {/* Save Button */}
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button variant="outlined" color="primary" onClick={handleBack}>
+            Back
+          </Button>
           <Button variant="contained" color="secondary" type="submit">
             Save
           </Button>
