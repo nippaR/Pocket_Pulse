@@ -8,11 +8,9 @@ import Metamask from './pages/Metamasklog';
 import IncomeManagement from './pages/IncomeManagement';
 import IncomeRecordsPage from './pages/IncomeRecordsPage';
 import EditIncomePage from './pages/EditIncomePage';
-
 import WhatIfScenarioPlanner from './pages/WhatIfScenarioPlanner';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
-
 import Community from './pages/Community';
 
 import Startup from './pages/investment-management/StartupPage';
@@ -37,21 +35,7 @@ const theme = createTheme({
   },
 });
 
-import Footer from './components/FooterPage';
-
-
-import CreateRegularPostPage from './pages/CreateRegularPostPage'; // Create Post page
-import EditDonationRequestPage from './pages/EditDonationRequestPage';
-
-import EditRegularPostPage from './pages/EditRegularPostPage';
-import GraphViewPage from './pages/GraphViewPage';
-import TransHome from './pages/Transaction/TransHome'
-// import Createpro from './pages/investment-project/Createpro';
-// import Viewpro from './pages/investment-project/Viewpro';
-// import InvestmentDetails from './pages/investment-project/InvestmentDetails';
-
 function App() {
-  
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -84,7 +68,6 @@ function MainContent() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/community" element={<Community />} />
         <Route path="/investment-projects" element={<InvestmentProjects />} />
-
         <Route path="/start-up" element={<Startup />} />
         <Route path="/form-page" element={<Formpage />} />
         {/* Dynamic route for InvestmentDetails with projectId */}
@@ -96,19 +79,6 @@ function MainContent() {
       </Routes>
 
       {/* Conditionally render the footer based on the current path */}
-
-        <Route path="/create-post" element={<CreateRegularPostPage />} />
-        <Route path="/edit-donation-request/:Id" element={<EditDonationRequestPage />} />
-        <Route path="/edit-regular-post/:postId" element={<EditRegularPostPage />} />
-        <Route path="/graphs" element={<GraphViewPage />} />
-        <Route path="/trans-home" element={<TransHome />} />
-        {/* <Route path="/create-pro" element={<Createpro />} />
-        <Route path="/view-pro" element={<Viewpro />} />
-        <Route path="/investment-details" element={<InvestmentDetails />} /> */}
-
-      </Routes>
-
-
       {!isNoHeaderFooterPage && <Footer />}
     </>
   );

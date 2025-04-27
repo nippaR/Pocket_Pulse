@@ -29,7 +29,7 @@ const handleRefresh = () => {
               </Button>
 
               <Button  onClick={handleRefresh} sx={{ml:5, mt:2}}>
-                  <RouterLink to="/view-pro" style={{ textDecoration: 'none',color:'#ffffff', fontSize:'13.5px' }}> Investment </RouterLink>
+                  <RouterLink to="/investment-projects" style={{ textDecoration: 'none',color:'#ffffff', fontSize:'13.5px' }}> Investment </RouterLink>
               </Button>
 
               <Button  onClick={handleRefresh} sx={{ml:5, mt:2}}>
