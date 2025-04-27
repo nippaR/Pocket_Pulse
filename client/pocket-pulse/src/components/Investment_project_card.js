@@ -33,7 +33,7 @@ const ProjectCard = ({ project }) => {
       <CardActions sx={{ justifyContent: "center" }}>
         <Button variant="contained" color="primary" size="small"
         onClick={ () =>{
-          navigate('/startup-a');
+          navigate('/starup');
         }}
         >
           Invest
