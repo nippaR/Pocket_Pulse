@@ -36,7 +36,7 @@ const handleRefresh = () => {
                   <RouterLink to="/records" style={{ textDecoration: 'none',color:'#ffffff', fontSize:'13.5px' }}> Income/Expense </RouterLink>
               </Button>
 
-              <Button  onClick={handleRefresh} sx={{ml:5, mt:2}}>
+              <Button  sx={{ml:5, mt:2}}>
                   <RouterLink to="/trans-home" style={{ textDecoration: 'none', color:'#ffffff', fontSize:'13.5px' }}>Transactions</RouterLink>
               </Button>
 
