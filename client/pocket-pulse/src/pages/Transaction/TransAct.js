@@ -57,7 +57,7 @@ const TransactionHistory = () => {
       />
       
       {filteredTransactions.length === 0 ? (
-        <Typography variant="body1" align="center">No transactions found</Typography>
+        <Typography variant="body1" align="center">No transactions found..! Plz try again</Typography>
       ) : (
         <Grid container spacing={2}>
           {filteredTransactions.map((txn) => (
