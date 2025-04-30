@@ -693,7 +693,7 @@ function Community() {
         {/* CREATE POST BUTTON */}
         <Box sx={{ mb: 3, textAlign: 'left' }}>
           <Button variant="contained" onClick={handleOpenChoiceModal} sx={{ backgroundColor: '#283593' }}>
-            Create Post
+            Create Posts
           </Button>
         </Box>
 
