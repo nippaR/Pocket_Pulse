@@ -372,7 +372,7 @@ function IncomeRecordsPage() {
               startIcon={<AddIcon />}
               onClick={handleAddIncome}
             >
-              Add Records
+              Add Record
             </Button>
           </Box>
         </Box>
