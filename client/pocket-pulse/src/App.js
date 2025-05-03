@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './pages/Header';
+
 import Footer from './components/FooterPage';
 import Home from './pages/Home';
 import Metamask from './pages/Metamasklog';
