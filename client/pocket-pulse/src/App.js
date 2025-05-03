@@ -15,6 +15,7 @@ import SignUpPage from './pages/SignUpPage';
 import Community from './pages/Community';
 
 import Startup from './pages/investment-management/StartupPage';
+
 import Formpage from './pages/investment-management/formpage';
 import InvestmentDetails from './pages/investment-management/InvestmentDetails';
 import CreateProject from './pages/investment-management/Createpro';
