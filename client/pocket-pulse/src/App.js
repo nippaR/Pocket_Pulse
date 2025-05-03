@@ -21,6 +21,7 @@ import InvestmentDetails from './pages/investment-management/InvestmentDetails';
 import CreateProject from './pages/investment-management/Createpro';
 import Viewpro from './pages/investment-management/Viewpro';
 import EditProject from './pages/investment-management/Editproject';
+
 import RealEstateCrowdfundingPage from './pages/investment-management/RealEstateCrowdfundingPage';
 import InvestmentProjects from './pages/investment-management/Investment';
 const theme = createTheme({
