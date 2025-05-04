@@ -5,10 +5,13 @@ import Header from './pages/Header';
 
 import Footer from './components/FooterPage';
 import Home from './pages/Home';
+
 import Metamask from './pages/Metamasklog';
 import IncomeManagement from './pages/IncomeManagement';
 
+
 import IncomeRecordsPage from './pages/IncomeRecordsPage';
+
 import EditIncomePage from './pages/EditIncomePage';
 
 import WhatIfScenarioPlanner from './pages/WhatIfScenarioPlanner';
