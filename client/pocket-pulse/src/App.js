@@ -21,6 +21,7 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 
 import Community from './pages/Community';
+import GraphViewPage from './pages/GraphViewPage';
 
 import Startup from './pages/investment-management/StartupPage';
 
@@ -77,6 +78,7 @@ function MainContent() {
         <Route path="/income" element={<IncomeManagement />} />
         <Route path="/records" element={<IncomeRecordsPage />} />
         <Route path="/what-if" element={<WhatIfScenarioPlanner />} />
+        <Route path="/graphs" element={<GraphViewPage />} />
         <Route path="/edit-income/:rowIndex" element={<EditIncomePage />} />
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
