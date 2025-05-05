@@ -9,27 +9,33 @@ import {
   InputAdornment,
   TextField,
   Typography,
-  Link
+  Link,
+  Alert,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  // Local state for email, password, showPassword
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
-  // Example login function
-  const handleLogin = () => {
-    // Perform your login logic here
-    console.log('Logging in with:', email, password);
-    // If success, navigate to Home page
-    navigate('/');
+  const handleLogin = async () => {
+    setError('');
+    try {
+      const { data } = await api.post('/auth/login', { email, password });
+      localStorage.setItem('token', data.token);
+      navigate('/records');
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Login failed');
+    }
   };
 
   return (
@@ -46,6 +52,12 @@ const LoginPage = () => {
       <Typography variant="h5" align="center" gutterBottom>
         Login
       </Typography>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
       <TextField
         label="Email"
@@ -97,7 +109,7 @@ const LoginPage = () => {
       <Box textAlign="center" sx={{ mb: 2 }}>
         <Typography variant="body2">
           Don’t have an account?{' '}
-          <Link href="/signup" variant="body2">
+          <Link component="button" onClick={() => navigate('/signup')} variant="body2">
             Sign Up
           </Link>
         </Typography>
