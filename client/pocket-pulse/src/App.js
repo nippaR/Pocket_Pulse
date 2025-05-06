@@ -79,7 +79,7 @@ function MainContent() {
         <Route path="/records" element={<IncomeRecordsPage />} />
         <Route path="/what-if" element={<WhatIfScenarioPlanner />} />
         <Route path="/graphs" element={<GraphViewPage />} />
-        <Route path="/edit-income/:rowIndex" element={<EditIncomePage />} />
+        <Route path="/edit-income/:id" element={<EditIncomePage />} />
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/community" element={<Community />} />
