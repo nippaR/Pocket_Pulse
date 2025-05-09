@@ -1,4 +1,4 @@
-// src/pages/SignUpPage.js
+// client/src/pages/SignUpPage.js
 import React, { useState } from 'react';
 import {
   Box,
@@ -9,28 +9,45 @@ import {
   InputAdornment,
   TextField,
   Typography,
-  Link
+  Alert,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import api from '../services/api';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
 
-  // Local state for email, passwords, showPasswords
+  // form state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleSignUp = () => {
-    // Perform your sign-up logic here
-    console.log('Signing up with:', email, password, confirm);
+  // error banner
+  const [error, setError] = useState('');
 
-    navigate('/');
+  const handleSignUp = async () => {
+    setError('');
+
+    // simple client-side match check
+    if (password !== confirm) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    try {
+      // call your backend signup endpoint
+      await api.post('/auth/signup', { email, password });
+      // on success, redirect to sign in
+      navigate('/signin');
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Signup failed.');
+    }
   };
 
   return (
@@ -47,6 +64,12 @@ const SignUpPage = () => {
       <Typography variant="h5" align="center" gutterBottom>
         Sign Up
       </Typography>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
       <TextField
         label="Email"
@@ -115,9 +138,9 @@ const SignUpPage = () => {
       <Box textAlign="center" sx={{ mb: 2 }}>
         <Typography variant="body2">
           Already have an account?{' '}
-          <Link href="/signin" variant="body2">
+          <RouterLink to="/signin" style={{ textDecoration: 'none', color: '#1976d2' }}>
             Login
-          </Link>
+          </RouterLink>
         </Typography>
       </Box>
 
