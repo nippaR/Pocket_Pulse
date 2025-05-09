@@ -26,8 +26,8 @@ const TransactionHistory = () => {
 
   const filteredTransactions = transactions.filter(txn =>
     (txn.toAccount.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     txn.amount.toString().includes(searchTerm) ||
-     txn.fromAccount.toLowerCase().includes(searchTerm)) &&
+    txn.amount.toString().includes(searchTerm) ||
+    txn.fromAccount.toLowerCase().includes(searchTerm)) &&
     (searchDate ? txn.date === searchDate : true)
   );
 
@@ -42,6 +42,7 @@ const TransactionHistory = () => {
         variant="outlined"
         fullWidth
         margin="normal"
+        required
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
@@ -51,6 +52,7 @@ const TransactionHistory = () => {
         type="date"
         InputLabelProps={{ shrink: true }}
         fullWidth
+        required
         margin="normal"
         value={searchDate}
         onChange={(e) => setSearchDate(e.target.value)}
