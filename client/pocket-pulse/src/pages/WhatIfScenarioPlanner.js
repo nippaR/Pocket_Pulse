@@ -1,173 +1,127 @@
 // src/pages/WhatIfScenarioPlanner.js
 import React, { useState, useEffect } from 'react';
 import {
-  Container,
-  Typography,
-  Button,
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  OutlinedInput,
-  Chip,
-  Paper,
+  Container, Typography, Button, Box, FormControl, InputLabel, Select,
+  MenuItem, OutlinedInput, Chip, Paper
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';          // <-- Axios instance
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
+  PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP, width: 250 } },
 };
 
 const WhatIfScenarioPlanner = () => {
   const navigate = useNavigate();
-  
-  // State for income records loaded from local storage
-  const [incomeList, setIncomeList] = useState([]);
-  // State for selected categories to remove (multi-select)
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  // State to store the simulation result message
-  const [simulationResult, setSimulationResult] = useState('');
-  // Control dropdown open state
-  const [selectOpen, setSelectOpen] = useState(false);
 
-  // On mount, load income records from local storage
+  /* --------------------------------------------------- state */
+  const [incomeList, setIncomeList]       = useState([]);   // records from API
+  const [selectedCategories, setSelected] = useState([]);   // multi‑select
+  const [simulationResult, setResult]     = useState('');   // output message
+  const [selectOpen, setSelectOpen]       = useState(false);
+
+  /* --------------------------------------------------- load records */
   useEffect(() => {
-    const stored = localStorage.getItem('incomesRecords');
-    if (stored) {
-      setIncomeList(JSON.parse(stored));
-    }
+    const fetchIncomes = async () => {
+      try { const { data } = await api.get('/incomes'); setIncomeList(data); }
+      catch (err) { console.error(err); }
+    };
+    fetchIncomes();
   }, []);
 
-  // Create default categories you always want to include
-  const defaultCategories = ['Rent', 'Deposit', 'Other'];
-  // Extract unique categories from income records (filter out empty values)
-  const extractedCategories = incomeList
-    .map((rec) => rec.category)
-    .filter(Boolean);
-  // Merge defaults with extracted categories and remove duplicates
-  const categories = Array.from(new Set([...defaultCategories, ...extractedCategories]));
+  /* --------------------------------------------------- categories list */
+  const defaultCategories = ['Rent', 'Deposit', 'Freelance', 'Other'];
+  const extracted         = incomeList.map(r => r.category).filter(Boolean);
+  const categories        = Array.from(new Set([...defaultCategories, ...extracted]));
 
-  // Handle multi-select change for categories; close dropdown after selection
-  const handleCategoryChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedCategories(typeof value === 'string' ? value.split(',') : value);
+  /* --------------------------------------------------- handlers */
+  const handleCategoryChange = (e) => {
+    const val = e.target.value;
+    setSelected(typeof val === 'string' ? val.split(',') : val);
     setSelectOpen(false);
   };
 
-  // Compute total income from all records
-  const computeTotalIncome = () =>
-    incomeList.reduce((acc, rec) => acc + parseFloat(rec.amount || 0), 0);
+  /* computations */
+  const totalIncome   = () =>
+    incomeList.reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
 
-  // Compute total income of records that belong to any selected category
-  const computeRemovedIncome = () =>
-    incomeList.reduce((acc, rec) => {
-      if (selectedCategories.includes(rec.category)) {
-        return acc + parseFloat(rec.amount || 0);
-      }
-      return acc;
-    }, 0);
+  const removedIncome = () =>
+    incomeList.reduce((sum, r) =>
+      selectedCategories.includes(r.category) ? sum + (parseFloat(r.amount)||0) : sum, 0);
 
-  // Run simulation: subtract removed income from total and display result
   const runSimulation = () => {
-    if (selectedCategories.length === 0) {
-      setSimulationResult('Please select at least one income category to remove.');
+    if (!selectedCategories.length) {
+      setResult('Please select at least one income category to remove.');
       return;
     }
-    const total = computeTotalIncome();
-    const removed = computeRemovedIncome();
-    const newTotal = total - removed;
-    setSimulationResult(
-      `Original total income: $${total.toLocaleString()}. If you remove income from the following categories: ${selectedCategories.join(
-        ', '
-      )}, your predicted next month income would be $${newTotal.toLocaleString()}.`
+    const total   = totalIncome();
+    const removed = removedIncome();
+    const newTot  = total - removed;
+
+    setResult(
+      `Original total income: $${total.toLocaleString()}. If you remove income from ` +
+      `${selectedCategories.join(', ')}, your predicted next‑month income would be ` +
+      `$${newTot.toLocaleString()}.`
     );
   };
 
+  /* --------------------------------------------------- JSX */
   return (
-    <Container sx={{ my: 4 }}>
-      {/* Top Welcome Banner */}
-      <Box
-        sx={{
-          mb: 3,
-          p: 3,
-          backgroundColor: '#f4f4f4',
-          borderRadius: 1,
-          textAlign: 'center',
-        }}
-      >
-        <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 1 }}>
-          Welcome to What If Scenario Planner
+    <Container sx={{ my:4 }}>
+      {/* Welcome banner */}
+      <Box sx={{ mb:3, p:3, backgroundColor:'#f4f4f4', borderRadius:1, textAlign:'center' }}>
+        <Typography variant="h3" sx={{ fontWeight:'bold', mb:1 }}>
+          Welcome to What‑If Scenario Planner
         </Typography>
         <Typography variant="body1">
-          What is the Scenario Planner? You can imagine if you lost some income next month—how it would affect your total income. 
-          For example, if you lost your rent income next month, the system will recalculate your predicted income by removing that income field. 
-          Use this tool to plan and manage your income scenarios.
+          Imagine losing an income stream next month—how would that impact your total?
+          Select categories like “Rent”, “Deposit”, “Freelance”, etc., and let the planner
+          recalculate your predicted income.
         </Typography>
       </Box>
 
-      {/* Page Heading */}
-      <Typography variant="h4" gutterBottom>
-        What If Scenario Planner
-      </Typography>
+      <Typography variant="h4" gutterBottom>What‑If Scenario Planner</Typography>
       <Typography variant="body1" gutterBottom>
-        Select one or more income categories to remove (e.g. Rent, Deposit, Other) to see how your next month income would be affected.
+        Choose one or more income categories to exclude and see the effect on next‑month
+        income.
       </Typography>
 
-      {/* Multi-select Dropdown for Categories */}
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      {/* Multi‑select */}
+      <FormControl fullWidth sx={{ mb:2 }}>
         <InputLabel id="select-income-label">Remove Categories</InputLabel>
         <Select
           labelId="select-income-label"
           multiple
+          open={selectOpen}
+          onOpen={()=>setSelectOpen(true)}
+          onClose={()=>setSelectOpen(false)}
           value={selectedCategories}
           onChange={handleCategoryChange}
-          open={selectOpen}
-          onOpen={() => setSelectOpen(true)}
-          onClose={() => setSelectOpen(false)}
           input={<OutlinedInput label="Remove Categories" />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
-              ))}
+          renderValue={(selected)=>(
+            <Box sx={{ display:'flex', flexWrap:'wrap', gap:0.5 }}>
+              {selected.map(v => <Chip key={v} label={v} />)}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          {categories.map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
-            </MenuItem>
+          {categories.map(cat => (
+            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
           ))}
         </Select>
       </FormControl>
 
       {/* Buttons */}
       <Box display="flex" gap={2} mb={2}>
-        <Button variant="contained" onClick={runSimulation}>
-          Run Simulation
-        </Button>
-        <Button variant="outlined" onClick={() => navigate('/records')}>
-          Back to Records
-        </Button>
+        <Button variant="contained" onClick={runSimulation}>Run Simulation</Button>
+        <Button variant="outlined" onClick={()=>navigate('/records')}>Back to Records</Button>
       </Box>
 
-      {/* Display Simulation Result */}
-      {simulationResult && (
-        <Paper sx={{ p: 2, mb: 2 }}>
-          <Typography variant="body1">{simulationResult}</Typography>
-        </Paper>
-      )}
+      {/* Result */}
+      {simulationResult &&
+        <Paper sx={{ p:2, mb:2 }}><Typography>{simulationResult}</Typography></Paper>}
     </Container>
   );
 };

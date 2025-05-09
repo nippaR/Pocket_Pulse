@@ -1,24 +1,39 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './pages/Header';
+
 import Footer from './components/FooterPage';
 import Home from './pages/Home';
+
 import Metamask from './pages/Metamasklog';
 import IncomeManagement from './pages/IncomeManagement';
+
+
 import IncomeRecordsPage from './pages/IncomeRecordsPage';
+
 import EditIncomePage from './pages/EditIncomePage';
+
 import WhatIfScenarioPlanner from './pages/WhatIfScenarioPlanner';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+
 import Community from './pages/Community';
+import GraphViewPage from './pages/GraphViewPage';
 
 import Startup from './pages/investment-management/StartupPage';
+
 import Formpage from './pages/investment-management/formpage';
 import InvestmentDetails from './pages/investment-management/InvestmentDetails';
+
+
 import CreateProject from './pages/investment-management/Createpro';
 import Viewpro from './pages/investment-management/Viewpro';
+
 import EditProject from './pages/investment-management/Editproject';
+
 import RealEstateCrowdfundingPage from './pages/investment-management/RealEstateCrowdfundingPage';
 import InvestmentProjects from './pages/investment-management/Investment';
 const theme = createTheme({
@@ -63,7 +78,8 @@ function MainContent() {
         <Route path="/income" element={<IncomeManagement />} />
         <Route path="/records" element={<IncomeRecordsPage />} />
         <Route path="/what-if" element={<WhatIfScenarioPlanner />} />
-        <Route path="/edit-income/:rowIndex" element={<EditIncomePage />} />
+        <Route path="/graphs" element={<GraphViewPage />} />
+        <Route path="/edit-income/:id" element={<EditIncomePage />} />
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/community" element={<Community />} />
