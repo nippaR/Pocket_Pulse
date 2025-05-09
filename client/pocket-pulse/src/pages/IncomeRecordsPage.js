@@ -40,7 +40,7 @@ const Sidebar = () => (
             <ListItemText primary="Home" />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding><ListItemButton><ListItemText primary="Goal setting" /></ListItemButton></ListItem>
+        <ListItem disablePadding><ListItemButton><ListItemText primary="Community" /></ListItemButton></ListItem>
         <ListItem disablePadding><ListItemButton><ListItemText primary="Investment planning" /></ListItemButton></ListItem>
         <ListItem disablePadding><ListItemButton><ListItemText primary="Transactions" /></ListItemButton></ListItem>
         <ListItem disablePadding>
