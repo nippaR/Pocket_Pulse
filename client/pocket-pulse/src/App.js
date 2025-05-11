@@ -21,6 +21,7 @@ import EditProject from './pages/investment-management/Editproject';
 import RealEstateCrowdfundingPage from './pages/investment-management/RealEstateCrowdfundingPage';
 import InvestmentProjects from './pages/investment-management/Investment';
 import TrasHome from './pages/Transaction/TransHome';
+import SlideShow from './components/SlideShow';
 
 const theme = createTheme({
   palette: {
@@ -79,6 +80,7 @@ function MainContent() {
         <Route path="/edit-project" element={<EditProject />} />
         <Route path="/real-page" element={< RealEstateCrowdfundingPage  />} />
         <Route path='/transaction' element={<TrasHome />} />
+        <Route path='/slide' element={<SlideShow />} />
 
       </Routes>
 
