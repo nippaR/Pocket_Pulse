@@ -1,41 +1,27 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-
-
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './pages/Header';
-
 import Footer from './components/FooterPage';
 import Home from './pages/Home';
-
 import Metamask from './pages/Metamasklog';
 import IncomeManagement from './pages/IncomeManagement';
-
-
 import IncomeRecordsPage from './pages/IncomeRecordsPage';
-
 import EditIncomePage from './pages/EditIncomePage';
-
 import WhatIfScenarioPlanner from './pages/WhatIfScenarioPlanner';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
-
 import Community from './pages/Community';
 import GraphViewPage from './pages/GraphViewPage';
-
 import Startup from './pages/investment-management/StartupPage';
-
 import Formpage from './pages/investment-management/formpage';
 import InvestmentDetails from './pages/investment-management/InvestmentDetails';
-
-
 import CreateProject from './pages/investment-management/Createpro';
 import Viewpro from './pages/investment-management/Viewpro';
-
 import EditProject from './pages/investment-management/Editproject';
-
 import RealEstateCrowdfundingPage from './pages/investment-management/RealEstateCrowdfundingPage';
 import InvestmentProjects from './pages/investment-management/Investment';
+import TrasHome from './pages/Transaction/TransHome';
+
 const theme = createTheme({
   palette: {
     background: {
@@ -92,6 +78,8 @@ function MainContent() {
         <Route path="/view-pro" element={<Viewpro />} />
         <Route path="/edit-project" element={<EditProject />} />
         <Route path="/real-page" element={< RealEstateCrowdfundingPage  />} />
+        <Route path='/transaction' element={<TrasHome />} />
+
       </Routes>
 
       {/* Conditionally render the footer based on the current path */}
