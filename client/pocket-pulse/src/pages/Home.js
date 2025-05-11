@@ -1,10 +1,26 @@
-import React from 'react';
 import {Box, Grid} from '@mui/material';
 import InvetSec from './HomePageComponents/InvetSec';
 import IncomeSec from './HomePageComponents/IncomeSec';
 import TransactionSec from './HomePageComponents/TransactionSec';
 import SocialSec from './HomePageComponents/SocialSec';
+import {motion} from 'framer-motion';
 
+const MotionBox = motion(Box);
+
+const variantContainer = {
+    hidden: {
+      opacity: 0,
+      y:20
+    },
+    visible: {
+      opacity: 1,
+      y:0,
+      transition: {
+        delay: 0.1,
+        duration: 0.8,
+      },
+    },
+  };
 
 export default function Home() {
 
@@ -17,20 +33,37 @@ export default function Home() {
               display: 'flex',
               flexDirection: 'column',
     }}>
-      <Box>
+      <MotionBox
+      variants={variantContainer}
+      initial="hidden"
+      animate="visible"
+      >
       <InvetSec/>
-      </Box>
-      <Box>
+      </MotionBox>
+
+      <MotionBox
+      variants={variantContainer}
+      initial="hidden"
+      animate="visible"
+      >
       <IncomeSec/>
-      </Box>
+      </MotionBox>
 
-      <Box>
+      <MotionBox
+      variants={variantContainer}
+      initial="hidden"
+      animate="visible"
+      >
       <TransactionSec/>
-      </Box>
+      </MotionBox>
 
-      <Box>
+      <MotionBox
+      variants={variantContainer}
+      initial="hidden"
+      animate="visible"
+      >
       <SocialSec/>
-      </Box>
+      </MotionBox>
 
     </Grid>
   );

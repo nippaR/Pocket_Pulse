@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent, IconButton, Box, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Two from './Two';
-import ActCard from './ActCard';
+// import ActCard from './ActCard';
 import TransAct from './TransAct';
 
 const StoredCardDetails = () => {
