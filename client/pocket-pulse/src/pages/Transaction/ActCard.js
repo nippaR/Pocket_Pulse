@@ -56,6 +56,7 @@ const TransactionHistory = () => {
       )}
     </Container>
   );
+
 };
 
 export default TransactionHistory;
