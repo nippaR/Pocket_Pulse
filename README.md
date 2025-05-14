@@ -2,6 +2,8 @@ PocketPulse is a smart financial management application that helps users track t
 utilizing Blockchain-Powered Transaction System for secure transactions and AI-driven fraud detection. PocketPulse empowers users
 to make informed financial decisions and improve their financial health.
 
+-----------------------------------------------------------------------------
+
 Getting Started with Create React App
 This project was bootstrapped with Create React App.
 
