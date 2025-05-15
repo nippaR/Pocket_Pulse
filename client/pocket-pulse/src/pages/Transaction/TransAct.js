@@ -1,3 +1,5 @@
+// Transaction History Component
+
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Card, CardContent, Grid, Button, TextField } from '@mui/material';
 
@@ -70,9 +72,9 @@ const TransactionHistory = () => {
                   <Typography variant="body1">To: {txn.toAccount}</Typography>
                   <Typography variant="body1">Amount: ${txn.amount}</Typography>
                   <Typography variant="body1">Date: {txn.date}</Typography>
-                  <Button 
-                    variant="contained" 
-                    color="secondary" 
+                  <Button
+                    variant="contained"
+                    color="secondary"
                     onClick={() => handleDelete(txn.id)}
                     sx={{ mt: 2 }}
                   >

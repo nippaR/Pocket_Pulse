@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Card, CardContent, IconButton, Box, Stack } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { /**Container, Typography, Card, CardContent, IconButton,**/ Box, Stack } from '@mui/material';
+// import DeleteIcon from '@mui/icons-material/Delete';
 import Two from './Two';
 // import ActCard from './ActCard';
-import TransAct from './TransAct';
+// import TransAct from './TransAct';
+import ConnectAccount from './ConnectAccount';
+import Blockchain from './Blockchain';
 
 const StoredCardDetails = () => {
   const [storedCards, setStoredCards] = useState([]);
@@ -37,7 +39,7 @@ const StoredCardDetails = () => {
           <Two />
         </Box>
         
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Container maxWidth="sm" sx={{ mt: 14, ml: 3, boxShadow: 3, padding: 4, backgroundColor: '#fff' }}>
           <Typography variant="h4" gutterBottom align="center" sx={{ fontFamily: 'poppins' }}>
             Card Details
@@ -61,15 +63,21 @@ const StoredCardDetails = () => {
             ))
           ) : (
             <Typography variant="body1" align="center">No saved cards available.</Typography>
-          )}
-        <Box>
+          )} */}
+        {/* <Box>
           <TransAct />
-        </Box>
+        </Box> */}
 
-        </Container>
-      </Box>
+        {/* </Container>
+      </Box> */}
+
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <ConnectAccount />
+          </Box>
 
       </Stack>
+
+      <Blockchain/>
     </>
   );
 };

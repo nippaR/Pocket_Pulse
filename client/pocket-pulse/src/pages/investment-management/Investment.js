@@ -2,9 +2,13 @@ import React from 'react';
 import { Container, Grid, Typography, Button, Card, CardMedia, CardContent, CardActions, Box, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router-dom';
-import invest5 from '../../Assets/invest5.png'; 
+import invest5 from '../../Assets/invest5.png';
+import invest4 from '../../Assets/invest4.png';
+import invest3 from '../../Assets/invest3.png';
+import invest2 from '../../Assets/invest2.png';
 import investNewsImage from '../../Assets/invest-news.png'; // Corrected path for news image 1
 import investNewsImage2 from '../../Assets/invest-news-2.jpeg'; // Corrected path for news image 2
+import VillaResortPage from './VillaResortpage';
 
 const InvestmentPage = () => {
   // Define the investments data with the image included
@@ -21,21 +25,21 @@ const InvestmentPage = () => {
       interestRate: '6.2%',
       raised: '643,064',
       required: '1,000,000',
-      image: 'https://via.placeholder.com/300x200', // Placeholder image
+      image: invest4, // Placeholder image
     },
     {
       title: 'Ocean III Suites, III',
       interestRate: '6.8%',
       raised: '642,090',
       required: '1,000,000',
-      image: 'https://via.placeholder.com/300x200', // Placeholder image
+      image: invest3, // Placeholder image
     },
     {
       title: 'Vijaya Akani VI',
       interestRate: '6.3%',
       raised: '642,060',
       required: '1,000,000',
-      image: 'https://via.placeholder.com/300x200', // Placeholder image
+      image: invest2, // Placeholder image
     },
   ];
   
@@ -84,7 +88,8 @@ const InvestmentPage = () => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" sx={{ backgroundColor: '#FF6A13', color: 'white' }}>
+                <Button size="small" sx={{ backgroundColor: '#FF6A13', color: 'white' }}
+                  onClick={navigate('/villa-resort')}>
                   Invest
                 </Button>
                 <Button size="small" sx={{ backgroundColor: '#2C2E8C', color: 'white' }}>

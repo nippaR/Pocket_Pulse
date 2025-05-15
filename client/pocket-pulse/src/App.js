@@ -22,6 +22,12 @@ import RealEstateCrowdfundingPage from './pages/investment-management/RealEstate
 import InvestmentProjects from './pages/investment-management/Investment';
 import TrasHome from './pages/Transaction/TransHome';
 import SlideShow from './components/SlideShow';
+import ConnectAccount from './pages/Transaction/ConnectAccount';
+import AddDetailsCard from './pages/Transaction/AddCard';
+import Blockchain from './pages/Transaction/Blockchain';
+import { TransactionProvider } from './contex/TransactionContext';
+import VillaResortPage from './pages/investment-management/VillaResortpage';
+
 
 const theme = createTheme({
   palette: {
@@ -55,6 +61,7 @@ function MainContent() {
   const isNoHeaderFooterPage = noHeaderFooterPaths.includes(location.pathname);
 
   return (
+    <TransactionProvider>
     <>
       {/* Conditionally render the header based on the current path */}
       {!isNoHeaderFooterPage && <Header />}
@@ -81,12 +88,17 @@ function MainContent() {
         <Route path="/real-page" element={< RealEstateCrowdfundingPage  />} />
         <Route path='/transaction' element={<TrasHome />} />
         <Route path='/slide' element={<SlideShow />} />
+        <Route path='/connectWallet' element={<ConnectAccount />} />
+        <Route path='/add-card' element={<AddDetailsCard />} />
+        <Route path='/blockchain' element={<Blockchain />} />
+        <Route path='/villa-resort' element={<VillaResortPage />} />
 
       </Routes>
 
       {/* Conditionally render the footer based on the current path */}
       {!isNoHeaderFooterPage && <Footer />}
     </>
+    </TransactionProvider>
   );
 }
 

@@ -7,8 +7,8 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TransAct from './TransAct';
-import TranSum from './TranSum';
 import TransSend from './TransSend';
+import SummaryPage from './SummaryPage';
 
 function TabPanel(props) {
 const { children, value, index, ...other } = props;
@@ -63,8 +63,8 @@ export default function FullWidthTabs() {
                 aria-label="full width tabs example"
                 sx={{ backgroundColor: '#10151b' }}
                 >
-                <Tab label="Summary" {...a11yProps(0)} />
-                <Tab label="Transaction" {...a11yProps(1)} />
+                <Tab label="Transaction" {...a11yProps(0)} />
+                <Tab label="Summary" {...a11yProps(1)} />
                 <Tab label="Activity" {...a11yProps(2)} />
                 </Tabs>
             </AppBar>
@@ -73,7 +73,7 @@ export default function FullWidthTabs() {
                 <TransSend/>
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
-                <TranSum/>
+                <SummaryPage/>
             </TabPanel>
             
             <TabPanel value={value} index={2} dir={theme.direction}>
