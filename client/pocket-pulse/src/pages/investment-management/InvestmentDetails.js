@@ -7,6 +7,7 @@ import invest3 from '../../Assets/invest3.png';
 import invest4 from '../../Assets/invest4.png';
 import invest5 from '../../Assets/invest5.png';
 
+
 import {
   Box,
   Typography,
@@ -19,6 +20,7 @@ import {
 } from '@mui/material';
 import {
   Euro,
+  
   Star,
   QueryStats,
   CalendarMonth,
