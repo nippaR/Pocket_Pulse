@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 // Correct image imports based on the folder structure
 import firstpage from '../../Assets/firstpage.png';
 import invest2 from '../../Assets/invest2.png';
+
+
 import invest3 from '../../Assets/invest3.png';
 import invest4 from '../../Assets/invest4.png';
 import invest5 from '../../Assets/invest5.png';
