@@ -1,3 +1,5 @@
+//Transaction page
+
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, TextField, Button, Grid, MenuItem, Alert } from '@mui/material';
 
@@ -110,8 +112,8 @@ const TwoAccountsTransaction = () => {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4, ml: 2, mr: 2, boxShadow: 3, backgroundColor: '#fff', padding: 4, borderRadius: 8 }}>
-      <Typography variant="h4" gutterBottom align="center" sx={{ fontFamily: 'poppins' }}>
-        Transaction
+      <Typography variant="h6" gutterBottom align="center" sx={{ fontFamily: 'poppins' }}>
+        Transaction With your Credit Card
       </Typography>
 
       {successMessage && <Alert severity="success" sx={{ mb: 2 }}>{successMessage}</Alert>}

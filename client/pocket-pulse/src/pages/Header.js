@@ -51,21 +51,6 @@ const handleRefresh = () => {
             </Stack>
           </Box>
 
-          <Button variant="contained"
-                sx={{ backgroundColor: '#ff6600',
-                      borderRadius:10, width:115,
-                      height:29,
-                      mt:2.5,
-                      ml:15
-                      }}
-                      onClick={() =>{
-                        navigate('/signup');
-                        handleRefresh();
-                      }}
-
-                      >
-                        login
-          </Button>
 
         </Stack>
       </Grid>
